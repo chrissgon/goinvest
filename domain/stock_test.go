@@ -1,8 +1,23 @@
 package domain
 
 import (
+	"errors"
 	"testing"
 )
+
+func TestCheckStockID(t *testing.T) {
+	have := CheckStockID("PETR4")
+
+	if have != nil {
+		t.Fatalf("CheckStockID should return nil because ID is valid")
+	}
+
+	have = CheckStockID("PETR111")
+
+	if !errors.Is(have, ErrStockInvalidID) {
+		t.Fatalf("CheckStockID should return an error because ID is invalid")
+	}
+}
 
 func TestValuePerShare(t *testing.T) {
 	have := ValuePerShare(31643000000.00, 13044496930)

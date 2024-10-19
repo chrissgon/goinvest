@@ -1,1 +1,21 @@
 mode: set
+github.com/chrissgon/goinvest/domain/stocks.go:34.36,37.16 2 1
+github.com/chrissgon/goinvest/domain/stocks.go:37.16,39.3 1 0
+github.com/chrissgon/goinvest/domain/stocks.go:41.2,41.13 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:41.13,43.3 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:45.2,45.12 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:47.55,49.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:50.43,52.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:53.43,55.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:56.58,58.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:59.48,61.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:62.52,64.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:65.58,67.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:69.44,71.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:72.42,74.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:75.44,77.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:78.32,80.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:81.41,83.2 1 1
+github.com/chrissgon/goinvest/domain/stocks.go:84.41,86.2 1 1
+github.com/chrissgon/goinvest/internal/visnoinvest.go:13.46,15.2 1 0
+github.com/chrissgon/goinvest/internal/visnoinvest.go:17.67,19.24 2 0
