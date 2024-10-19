@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCheckStockID(t *testing.T) {
+func TestDomain_StockCheckStockID(t *testing.T) {
 	have := CheckStockID("PETR4")
 
 	if have != nil {
@@ -19,7 +19,7 @@ func TestCheckStockID(t *testing.T) {
 	}
 }
 
-func TestValuePerShare(t *testing.T) {
+func TestDomain_StockValuePerShare(t *testing.T) {
 	have := ValuePerShare(31643000000.00, 13044496930)
 	expected := 2.42
 
@@ -28,7 +28,7 @@ func TestValuePerShare(t *testing.T) {
 	}
 }
 
-func TestPER(t *testing.T) {
+func TestDomain_StockPER(t *testing.T) {
 	vps := ValuePerShare(31643000000.00, 13044496930)
 	have := PER(26.74, vps)
 	expected := 11.049586776859504
@@ -38,7 +38,7 @@ func TestPER(t *testing.T) {
 	}
 }
 
-func TestPBV(t *testing.T) {
+func TestDomain_StockPBV(t *testing.T) {
 	vps := ValuePerShare(303619000000.00, 13044496930)
 	have := PBV(26.74, vps)
 	expected := 1.1491190373871938
@@ -48,7 +48,7 @@ func TestPBV(t *testing.T) {
 	}
 }
 
-func TestProfitMargin(t *testing.T) {
+func TestDomain_StockProfitMargin(t *testing.T) {
 	have := ProfitMargin(31643000000.00, 302337000000.00)
 	expected := 10.46613547134489
 
@@ -57,7 +57,7 @@ func TestProfitMargin(t *testing.T) {
 	}
 }
 
-func TestROE(t *testing.T) {
+func TestDomain_StockROE(t *testing.T) {
 	have := ROE(31643000000.00, 303619000000.00)
 	expected := 10.421943290769024
 
@@ -66,7 +66,7 @@ func TestROE(t *testing.T) {
 	}
 }
 
-func TestDebitRatio(t *testing.T) {
+func TestDomain_StockDebitRatio(t *testing.T) {
 	have := DebtRatio(108643000000.00, 303619000000.00)
 	expected := 35.782674997282776
 
@@ -74,7 +74,7 @@ func TestDebitRatio(t *testing.T) {
 		t.Fatalf("DebtRatio should return %v but got %v", expected, have)
 	}
 }
-func TestDividendYield(t *testing.T) {
+func TestDomain_StockDividendYield(t *testing.T) {
 	have := DividendYield(0.87, 26.74)
 	expected := 3.2535527299925207
 
@@ -83,7 +83,7 @@ func TestDividendYield(t *testing.T) {
 	}
 }
 
-func TestGoodPER(t *testing.T) {
+func TestDomain_StockGoodPER(t *testing.T) {
 	vps := ValuePerShare(31643000000.00, 13044496930)
 	price := PER(26.74, vps)
 
@@ -99,7 +99,7 @@ func TestGoodPER(t *testing.T) {
 	}
 }
 
-func TestGoodPBV(t *testing.T) {
+func TestDomain_StockGoodPBV(t *testing.T) {
 	vps := ValuePerShare(303619000000.00, 13044496930)
 	price := PBV(26.74, vps)
 
@@ -115,7 +115,7 @@ func TestGoodPBV(t *testing.T) {
 	}
 }
 
-func TestGoodProfitMargin(t *testing.T) {
+func TestDomain_StockGoodProfitMargin(t *testing.T) {
 	margin := ProfitMargin(31643000000.00, 302337000000.00)
 
 	if !GoodProfitMargin(margin) {
@@ -129,7 +129,7 @@ func TestGoodProfitMargin(t *testing.T) {
 	}
 }
 
-func TestGoodROE(t *testing.T) {
+func TestDomain_StockGoodROE(t *testing.T) {
 	roe := ROE(31643000000.00, 303619000000.00)
 
 	if !GoodROE(roe) {
@@ -142,7 +142,7 @@ func TestGoodROE(t *testing.T) {
 		t.Fatalf("GoodROE should return false, but got true")
 	}
 }
-func TestGoodDebitRatio(t *testing.T) {
+func TestDomain_StockGoodDebitRatio(t *testing.T) {
 	debit := DebtRatio(108643000000.00, 303619000000.00)
 
 	if !GoodDebitRatio(debit) {
@@ -155,7 +155,7 @@ func TestGoodDebitRatio(t *testing.T) {
 		t.Fatalf("GoodDebitRatio should return false, but got true")
 	}
 }
-func TestGoodDividendYield(t *testing.T) {
+func TestDomain_StockGoodDividendYield(t *testing.T) {
 	dy := DividendYield(0.87, 26.74)
 
 	if !GoodDividendYield(dy) {

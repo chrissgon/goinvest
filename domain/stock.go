@@ -18,6 +18,13 @@ type StockEntity struct {
 	Shares     int
 }
 
+type StockIndicator struct {
+	name string
+	mark int
+	value float64
+	good bool
+}
+
 type StockSearchRepo interface {
 	Run(ID string) (*StockEntity, error)
 }
