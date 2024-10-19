@@ -2,7 +2,6 @@ package vinosinvest
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -53,7 +52,6 @@ func (v *VisnoInvest) Run(ID string) (*domain.StockEntity, error) {
 
 	data := visnoInvestResponse{}
 	json.Unmarshal(body, &data)
-	fmt.Println(data.Metadata.Price)
 
 	price, err := convertStringToFloat64(data.Metadata.Price)
 

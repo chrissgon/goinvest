@@ -1,0 +1,28 @@
+name: indicators
+
+steps:
+  init:
+    next:
+      default: welcome
+  
+  welcome:
+    action: Text
+    next:
+      default: input
+    parameters:
+      texts:
+        - Olá, bem vindo ao atendente virtual do Go Invest
+
+  input:
+    action: Input
+    next:
+      default: search
+    parameters:
+      texts:
+        - Por favor, digite o ticket da ação que deseja buscar
+        - Exemplo (PETR4)
+  
+  search:
+    action: Search
+    next:
+      default: search
