@@ -25,4 +25,4 @@ steps:
   search:
     action: Search
     next:
-      default: search
+      default: input

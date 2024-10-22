@@ -18,7 +18,10 @@ func (app *StockApp) Search(ID string) (*domain.StockEntity, error) {
 	}
 
 	stock, err := app.searchRepo.Run(ID)
-	stock.ID = ID
+
+	if stock != nil {
+		stock.ID = ID
+	}
 
 	return stock, err
 }

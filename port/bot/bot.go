@@ -8,24 +8,24 @@ import (
 	"strings"
 
 	"github.com/chrissgon/goinvest/controller"
+	"github.com/chrissgon/goinvest/domain"
 	"github.com/chrissgon/lowbot"
 )
 
 func StartBot() {
 	lowbot.SetCustomActions(lowbot.ActionsMap{
 		"Search": func(flow *lowbot.Flow, interaction *lowbot.Interaction, channel lowbot.IChannel) (bool, error) {
-			// step := flow.CurrentStep
-			fmt.Println("test")
+
 			stockID := flow.GetLastResponseText()
-			fmt.Println(stockID)
 
 			stockController := controller.StockController{}
 			stock, err := stockController.Search(stockID)
 
 			if err != nil {
-				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Infelizmente ocorreu um erro")
+				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Não foi possível encontrar a ação informada")
 				err := channel.SendText(in)
-				panic(err)
+				// panic(err)
+				return false, err
 			}
 
 			indicators, err := stockController.Analyse(stock)
@@ -49,22 +49,27 @@ func StartBot() {
 
 			sb.WriteString("📈 Indicadores\n\n")
 
-			for _, indicator := range indicators {
-				sb.WriteString(fmt.Sprintf("%v (%v) - Margem Baseada (%v)", indicator.Label, aroundFloor(indicator.Value), indicator.Mark))
+			getIndicatorText(&sb, indicators[domain.PER_NAME])
+			getIndicatorText(&sb, indicators[domain.PBV_NAME])
+			getIndicatorText(&sb, indicators[domain.PROFIT_MARGIN_NAME])
+			getIndicatorText(&sb, indicators[domain.ROE_NAME])
+			getIndicatorText(&sb, indicators[domain.DEBIT_RATIO_NAME])
+			// for _, indicator := range indicators {
+			// 	sb.WriteString(fmt.Sprintf("%v (%v) - Margem Baseada (%v)", indicator.Label, int(indicator.Value), indicator.Mark))
 
-				if indicator.Good {
-					sb.WriteString(" ✅")
-				} else {
-					sb.WriteString(" ❌")
-				}
+			// 	if indicator.Good {
+			// 		sb.WriteString(" ✅")
+			// 	} else {
+			// 		sb.WriteString(" ❌")
+			// 	}
 
-				sb.WriteString("\n\n")
-			}
+			// 	sb.WriteString("\n\n")
+			// }
 
 			in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, sb.String())
 			channel.SendText(in)
 
-			return true, nil
+			return false, nil
 		},
 		// func(flow *lowbot.Flow, interaction *lowbot.Interaction, channel lowbot.IChannel) (bool, error) {
 		// 	// step := flow.CurrentStep
@@ -99,8 +104,27 @@ func StartBot() {
 	lowbot.StartConsumer(consumer, []lowbot.IChannel{channel})
 }
 
-func aroundFloor(value float64) float64 {
-	return math.Floor((value)*100) / 100
+func getIndicatorText(sb *strings.Builder, indicator *domain.StockIndicator) {
+	if indicator.Good {
+		sb.WriteString("✅ ")
+	} else {
+		sb.WriteString("❌ ")
+	}
+	sb.WriteString(fmt.Sprintf("%v \n", indicator.Label))
+	sb.WriteString(fmt.Sprintf("Valor - %v \n", toFixed(indicator.Value, 2)))
+	sb.WriteString(fmt.Sprintf("Marca Sugerida - %v \n", toFixed(float64(indicator.Mark), 2)))
+
+
+	sb.WriteString("\n\n")
+}
+
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func toFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }
 
 func formatFloat64ToString(value float64) string {

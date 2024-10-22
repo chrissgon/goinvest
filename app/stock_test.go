@@ -6,21 +6,20 @@ import (
 	"testing"
 
 	"github.com/chrissgon/goinvest/domain"
-	"github.com/chrissgon/goinvest/mock"
 )
 
 func TestApp_StockSearch(t *testing.T) {
-	app := NewStockApp(mock.NewStockSearchRepoMock())
+	app := NewStockApp(domain.NewStockSearchRepoMock())
 
 	_, err := app.Search("")
 
-	if !errors.Is(err, domain.ErrStockInvalidID) {
+	if !errors.Is(err, domain.ErrStockIDInvalid) {
 		t.Fatalf("Search should return an error because ID is invalid")
 	}
 
-	stock, _ := app.Search("PETR4")
+	stock, _ := app.Search("VALE3")
 
-	if !reflect.DeepEqual(*stock, mock.StockEntityMockPETR4) {
+	if !reflect.DeepEqual(*stock, domain.StockEntityMockVALE3) {
 		t.Fatalf("Search should return a stock")
 	}
 }
