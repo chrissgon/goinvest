@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/chrissgon/goinvest/domain"
+	"github.com/chrissgon/goinvest/domain/stock"
 )
 
 const url = "https://api.visnoinvest.com.br/stocks/details/"
@@ -29,11 +29,11 @@ type visnoInvestResponse struct {
 	} `json:"metric_groups"`
 }
 
-func NewVisnoInvest() domain.StockSearchRepo {
+func NewVisnoInvest() stock.StockSearchRepo {
 	return &VisnoInvest{}
 }
 
-func (v *VisnoInvest) Run(ID string) (*domain.StockEntity, error) {
+func (v *VisnoInvest) Run(ID string) (*stock.StockEntity, error) {
 	res, err := http.Get(url + ID)
 
 	if err != nil {
@@ -41,7 +41,7 @@ func (v *VisnoInvest) Run(ID string) (*domain.StockEntity, error) {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, domain.ErrStockNotFound
+		return nil, stock.ErrStockNotFound
 	}
 
 	body, err := io.ReadAll(res.Body)
@@ -89,7 +89,7 @@ func (v *VisnoInvest) Run(ID string) (*domain.StockEntity, error) {
 		return nil, err
 	}
 
-	return &domain.StockEntity{
+	return &stock.StockEntity{
 		Price:      price,
 		Company:    data.Metadata.Company,
 		NetProfit:  netProfit,

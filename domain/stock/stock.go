@@ -1,4 +1,4 @@
-package domain
+package stock
 
 import (
 	"errors"
@@ -26,9 +26,6 @@ type StockIndicator struct {
 	Good  bool
 }
 
-type StockSearchRepo interface {
-	Run(ID string) (*StockEntity, error)
-}
 
 const PER_MARK = 15
 const PER_NAME = "per"

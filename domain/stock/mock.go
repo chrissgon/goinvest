@@ -1,4 +1,4 @@
-package domain
+package stock
 
 type stockSearchRepoMock struct{}
 

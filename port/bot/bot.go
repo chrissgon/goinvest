@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/chrissgon/goinvest/controller"
-	"github.com/chrissgon/goinvest/domain"
+	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/lowbot"
 )
 
@@ -19,7 +19,7 @@ func StartBot() {
 			stockID := flow.GetLastResponseText()
 
 			stockController := controller.StockController{}
-			stock, err := stockController.Search(stockID)
+			stockEntity, err := stockController.Search(stockID)
 
 			if err != nil {
 				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Não foi possível encontrar a ação informada")
@@ -28,7 +28,7 @@ func StartBot() {
 				return false, err
 			}
 
-			indicators, err := stockController.Analyse(stock)
+			indicators, err := stockController.Analyse(stockEntity)
 
 			if err != nil {
 				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Infelizmente ocorreu um erro")
@@ -38,22 +38,22 @@ func StartBot() {
 
 			sb := strings.Builder{}
 
-			sb.WriteString(fmt.Sprintf("🏢 %v - %v \n\n", stock.ID, formatFloat64ToString(stock.Price)))
+			sb.WriteString(fmt.Sprintf("🏢 %v - %v \n\n", stockEntity.ID, formatFloat64ToString(stockEntity.Price)))
 
-			sb.WriteString(fmt.Sprintf("Empresa - %v \n", stock.Company))
-			sb.WriteString(fmt.Sprintf("Lucro Líquido - %v \n", formatFloat64ToString(stock.NetProfit)))
-			sb.WriteString(fmt.Sprintf("Receita Líquida - %v \n", formatFloat64ToString(stock.NetRevenue)))
-			sb.WriteString(fmt.Sprintf("Patrimônio Líquido - %v \n", formatFloat64ToString(stock.NetEquity)))
-			sb.WriteString(fmt.Sprintf("Despesa Líquida - %v \n", formatFloat64ToString(stock.NetDebt)))
-			sb.WriteString(fmt.Sprintf("Total de Ações - %v \n \n", stock.Shares))
+			sb.WriteString(fmt.Sprintf("Empresa - %v \n", stockEntity.Company))
+			sb.WriteString(fmt.Sprintf("Lucro Líquido - %v \n", formatFloat64ToString(stockEntity.NetProfit)))
+			sb.WriteString(fmt.Sprintf("Receita Líquida - %v \n", formatFloat64ToString(stockEntity.NetRevenue)))
+			sb.WriteString(fmt.Sprintf("Patrimônio Líquido - %v \n", formatFloat64ToString(stockEntity.NetEquity)))
+			sb.WriteString(fmt.Sprintf("Despesa Líquida - %v \n", formatFloat64ToString(stockEntity.NetDebt)))
+			sb.WriteString(fmt.Sprintf("Total de Ações - %v \n \n", stockEntity.Shares))
 
 			sb.WriteString("📈 Indicadores\n\n")
 
-			getIndicatorText(&sb, indicators[domain.PER_NAME])
-			getIndicatorText(&sb, indicators[domain.PBV_NAME])
-			getIndicatorText(&sb, indicators[domain.PROFIT_MARGIN_NAME])
-			getIndicatorText(&sb, indicators[domain.ROE_NAME])
-			getIndicatorText(&sb, indicators[domain.DEBIT_RATIO_NAME])
+			getIndicatorText(&sb, indicators[stock.PER_NAME])
+			getIndicatorText(&sb, indicators[stock.PBV_NAME])
+			getIndicatorText(&sb, indicators[stock.PROFIT_MARGIN_NAME])
+			getIndicatorText(&sb, indicators[stock.ROE_NAME])
+			getIndicatorText(&sb, indicators[stock.DEBIT_RATIO_NAME])
 			// for _, indicator := range indicators {
 			// 	sb.WriteString(fmt.Sprintf("%v (%v) - Margem Baseada (%v)", indicator.Label, int(indicator.Value), indicator.Mark))
 
@@ -104,7 +104,7 @@ func StartBot() {
 	lowbot.StartConsumer(consumer, []lowbot.IChannel{channel})
 }
 
-func getIndicatorText(sb *strings.Builder, indicator *domain.StockIndicator) {
+func getIndicatorText(sb *strings.Builder, indicator *stock.StockIndicator) {
 	if indicator.Good {
 		sb.WriteString("✅ ")
 	} else {
@@ -113,7 +113,6 @@ func getIndicatorText(sb *strings.Builder, indicator *domain.StockIndicator) {
 	sb.WriteString(fmt.Sprintf("%v \n", indicator.Label))
 	sb.WriteString(fmt.Sprintf("Valor - %v \n", toFixed(indicator.Value, 2)))
 	sb.WriteString(fmt.Sprintf("Marca Sugerida - %v \n", toFixed(float64(indicator.Mark), 2)))
-
 
 	sb.WriteString("\n\n")
 }

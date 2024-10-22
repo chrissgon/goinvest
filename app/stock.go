@@ -1,56 +1,56 @@
 package app
 
-import "github.com/chrissgon/goinvest/domain"
+import "github.com/chrissgon/goinvest/domain/stock"
 
 type StockApp struct {
-	searchRepo domain.StockSearchRepo
+	searchRepo stock.StockSearchRepo
 }
 
-func NewStockApp(searchRepo domain.StockSearchRepo) *StockApp {
+func NewStockApp(searchRepo stock.StockSearchRepo) *StockApp {
 	return &StockApp{searchRepo}
 }
 
-func (app *StockApp) Search(ID string) (*domain.StockEntity, error) {
-	err := domain.CheckStockID(ID)
+func (app *StockApp) Search(ID string) (*stock.StockEntity, error) {
+	err := stock.CheckStockID(ID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	stock, err := app.searchRepo.Run(ID)
+	stockEntity, err := app.searchRepo.Run(ID)
 
-	if stock != nil {
-		stock.ID = ID
+	if stockEntity != nil {
+		stockEntity.ID = ID
 	}
 
-	return stock, err
+	return stockEntity, err
 }
 
-func (app *StockApp) Analyse(stock *domain.StockEntity) (map[string]*domain.StockIndicator, error) {
-	err := stock.IsValid()
+func (app *StockApp) Analyse(stockEntity *stock.StockEntity) (map[string]*stock.StockIndicator, error) {
+	err := stockEntity.IsValid()
 
 	if err != nil {
 		return nil, err
 	}
 
-	indicators := map[string]*domain.StockIndicator{}
+	indicators := map[string]*stock.StockIndicator{}
 
-	per := stock.GetPER()
+	per := stockEntity.GetPER()
 	indicators[per.Name] = per
 
-	pbv := stock.GetPBV()
+	pbv := stockEntity.GetPBV()
 	indicators[pbv.Name] = pbv
 
-	margin := stock.GetProfitMargin()
+	margin := stockEntity.GetProfitMargin()
 	indicators[margin.Name] = margin
 
-	roe := stock.GetROE()
+	roe := stockEntity.GetROE()
 	indicators[roe.Name] = roe
 
-	debt := stock.GetDebtRatio()
+	debt := stockEntity.GetDebtRatio()
 	indicators[debt.Name] = debt
 
-	// dividend := stock.GetDividenYeld()
+	// dividend := stockEntity.GetDividenYeld()
 	// indicators[dividend.Name] = dividend
 
 	return indicators, nil
