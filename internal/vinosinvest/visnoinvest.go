@@ -83,7 +83,7 @@ func (v *VisnoInvest) Run(ID string) (*stock.StockEntity, error) {
 		return nil, err
 	}
 
-	marketCap, err := convertStringToFloat64(data.MetricGroups[1].Metrics[17].Value)
+	lpa, err := convertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
 
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (v *VisnoInvest) Run(ID string) (*stock.StockEntity, error) {
 		NetRevenue: netRevenue,
 		NetEquity:  netEquity,
 		NetDebt:    netDebt,
-		Shares:     int(marketCap / price),
+		Shares:     int(netProfit / lpa),
 	}, nil
 }
 

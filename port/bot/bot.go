@@ -10,75 +10,59 @@ import (
 	"github.com/chrissgon/goinvest/controller"
 	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/lowbot"
+	"github.com/google/uuid"
 )
 
 func StartBot() {
 	lowbot.SetCustomActions(lowbot.ActionsMap{
-		"Search": func(flow *lowbot.Flow, interaction *lowbot.Interaction, channel lowbot.IChannel) (bool, error) {
-
-			stockID := flow.GetLastResponseText()
-
+		"SearchStock": func(interaction *lowbot.Interaction) (*lowbot.Interaction, bool) {
+			stockID := interaction.Parameters.Text
 			stockController := controller.StockController{}
 			stockEntity, err := stockController.Search(stockID)
 
 			if err != nil {
-				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Não foi possível encontrar a ação informada")
-				err := channel.SendText(in)
-				// panic(err)
-				return false, err
+				in := lowbot.NewInteractionMessageText("Não foi possível encontrar a ação informada.")
+				in.SetTo(interaction.To)
+				in.SetFrom(interaction.From)
+				return in, false
 			}
 
 			indicators, err := stockController.Analyse(stockEntity)
 
 			if err != nil {
-				in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, "Infelizmente ocorreu um erro")
-				err := channel.SendText(in)
-				panic(err)
+				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
+				in.SetTo(interaction.To)
+				in.SetFrom(interaction.From)
+				return in, false
 			}
 
 			sb := strings.Builder{}
 
 			sb.WriteString(fmt.Sprintf("🏢 %v - %v \n\n", stockEntity.ID, formatFloat64ToString(stockEntity.Price)))
 
-			sb.WriteString(fmt.Sprintf("Empresa - %v \n", stockEntity.Company))
-			sb.WriteString(fmt.Sprintf("Lucro Líquido - %v \n", formatFloat64ToString(stockEntity.NetProfit)))
-			sb.WriteString(fmt.Sprintf("Receita Líquida - %v \n", formatFloat64ToString(stockEntity.NetRevenue)))
-			sb.WriteString(fmt.Sprintf("Patrimônio Líquido - %v \n", formatFloat64ToString(stockEntity.NetEquity)))
-			sb.WriteString(fmt.Sprintf("Despesa Líquida - %v \n", formatFloat64ToString(stockEntity.NetDebt)))
-			sb.WriteString(fmt.Sprintf("Total de Ações - %v \n \n", stockEntity.Shares))
+			sb.WriteString(fmt.Sprintf("Empresa (%v) \n", stockEntity.Company))
+			sb.WriteString(fmt.Sprintf("\nLucro Líquido \n%v \n", formatFloat64ToString(stockEntity.NetProfit)))
+			sb.WriteString(fmt.Sprintf("\nReceita Líquida \n%v \n", formatFloat64ToString(stockEntity.NetRevenue)))
+			sb.WriteString(fmt.Sprintf("\nPatrimônio Líquido \n%v \n", formatFloat64ToString(stockEntity.NetEquity)))
+			sb.WriteString(fmt.Sprintf("\nDespesa Líquida \n%v \n", formatFloat64ToString(stockEntity.NetDebt)))
+			sb.WriteString(fmt.Sprintf("\nTotal de Ações \n%v \n \n", stockEntity.Shares))
 
 			sb.WriteString("📈 Indicadores\n\n")
+
+			fmt.Println(stockEntity.Shares)
 
 			getIndicatorText(&sb, indicators[stock.PER_NAME])
 			getIndicatorText(&sb, indicators[stock.PBV_NAME])
 			getIndicatorText(&sb, indicators[stock.PROFIT_MARGIN_NAME])
 			getIndicatorText(&sb, indicators[stock.ROE_NAME])
 			getIndicatorText(&sb, indicators[stock.DEBIT_RATIO_NAME])
-			// for _, indicator := range indicators {
-			// 	sb.WriteString(fmt.Sprintf("%v (%v) - Margem Baseada (%v)", indicator.Label, int(indicator.Value), indicator.Mark))
 
-			// 	if indicator.Good {
-			// 		sb.WriteString(" ✅")
-			// 	} else {
-			// 		sb.WriteString(" ❌")
-			// 	}
+			in := lowbot.NewInteractionMessageText(sb.String())
+			in.SetTo(interaction.To)
+			in.SetFrom(interaction.From)
 
-			// 	sb.WriteString("\n\n")
-			// }
-
-			in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, sb.String())
-			channel.SendText(in)
-
-			return false, nil
+			return in, true
 		},
-		// func(flow *lowbot.Flow, interaction *lowbot.Interaction, channel lowbot.IChannel) (bool, error) {
-		// 	// step := flow.CurrentStep
-		// 	// template := lowbot.ParseTemplate(step.Parameters.Texts)
-		// 	// templateWithUsername := fmt.Sprintf(template, flow.GetLastResponseText())
-		// 	// in := lowbot.NewInteractionMessageText(channel, interaction.Destination, interaction.Sender, templateWithUsername)
-		// 	// err := channel.SendText(in)
-		// 	// return true, err
-		// }
 	})
 
 	channel, err := lowbot.NewTelegramChannel(os.Getenv("TELEGRAM_TOKEN"))
@@ -101,7 +85,15 @@ func StartBot() {
 
 	consumer := lowbot.NewJourneyConsumer(flow, persist)
 
-	lowbot.StartConsumer(consumer, []lowbot.IChannel{channel})
+	bot := lowbot.NewBot(consumer, map[uuid.UUID]lowbot.IChannel{
+		channel.GetChannel().ChannelID: channel,
+	})
+
+	bot.Start()
+
+	// keep the process running
+	sc := make(chan os.Signal, 1)
+	<-sc
 }
 
 func getIndicatorText(sb *strings.Builder, indicator *stock.StockIndicator) {

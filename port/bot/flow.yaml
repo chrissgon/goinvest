@@ -4,25 +4,56 @@ steps:
   init:
     next:
       default: welcome
-  
+
   welcome:
     action: Text
     next:
-      default: input
+      default: stockOrFund
     parameters:
       texts:
-        - Olá, bem vindo ao atendente virtual do Go Invest
+        - Olá, bem vindo ao atendente virtual do Go Invest.
 
-  input:
+  stockOrFund:
+    next:
+      1: stockInput
+      2: fundInput
+      default: wrongStockOrFund
+    action: Button
+    parameters:
+      texts:
+        - Sobre o que deseja pesquisar?
+        -
+      buttons:
+        - Ações
+        # - Fundos
+
+  wrongStockOrFund:
+    next:
+      default: stockOrFund
+    action: Text
+    parameters:
+      texts:
+        - Não pude entender sua resposta.
+
+  stockInput:
     action: Input
     next:
-      default: search
+      ^[a-zA-Z]{4}[0-9]{1,2}$: stockSearch
+      default: wrongStockID
     parameters:
       texts:
-        - Por favor, digite o ticket da ação que deseja buscar
+        - Por favor, digite o ticket da ação que deseja buscar.
         - Exemplo (PETR4)
-  
-  search:
-    action: Search
+
+  wrongStockID:
     next:
-      default: input
+      default: stockInput
+    action: Text
+    parameters:
+      texts:
+        - Ticket informado incorreto.
+
+  stockSearch:
+    action: SearchStock
+    next:
+      default: stockInput
