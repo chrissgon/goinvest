@@ -10,23 +10,21 @@ func NewStockApp(searchRepo stock.StockSearchRepo) *StockApp {
 	return &StockApp{searchRepo}
 }
 
-func (app *StockApp) Search(ID string) (*stock.StockEntity, error) {
+func (app *StockApp) Search(ID string) (stock.StockEntity, error) {
 	err := stock.CheckStockID(ID)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	stockEntity, err := app.searchRepo.Run(ID)
 
-	if stockEntity != nil {
-		stockEntity.ID = ID
-	}
+	stockEntity.ID = ID
 
 	return stockEntity, err
 }
 
-func (app *StockApp) Analyse(stockEntity *stock.StockEntity) (map[string]*stock.StockIndicator, error) {
+func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]*stock.StockIndicator, error) {
 	err := stockEntity.IsValid()
 
 	if err != nil {

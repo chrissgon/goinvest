@@ -11,7 +11,7 @@ var StockEntityMockPETR4 = StockEntity{
 	NetEquity:  373480000000.00,
 	NetDebt:    7143243975.00,
 	Shares:     13044496930,
-	Dividend: 6.3937,
+	Dividend:   6.3937,
 }
 
 var StockEntityMockVALE3 = StockEntity{
@@ -23,7 +23,7 @@ var StockEntityMockVALE3 = StockEntity{
 	NetEquity:  205450000000.00,
 	NetDebt:    47760000000.00,
 	Shares:     786043449,
-	Dividend: 7.164,
+	Dividend:   7.164,
 }
 
 var StockEntityMockYDUQ3 = StockEntity{
@@ -35,14 +35,14 @@ var StockEntityMockYDUQ3 = StockEntity{
 	NetEquity:  2140000000.00,
 	NetDebt:    4560000000.00,
 	Shares:     445312500,
-	Dividend: 0.1745,
+	Dividend:   0.1745,
 }
 
 func NewStockSearchRepoMock() StockSearchRepo {
 	return &stockSearchRepoMock{}
 }
 
-func (v *stockSearchRepoMock) Run(ID string) (*StockEntity, error) {
+func (v *stockSearchRepoMock) Run(ID string) (StockEntity, error) {
 	stock := StockEntityMockVALE3
-	return &stock, nil
+	return stock, nil
 }

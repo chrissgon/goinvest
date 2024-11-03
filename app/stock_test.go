@@ -19,7 +19,7 @@ func TestApp_StockSearch(t *testing.T) {
 
 	stockEntity, _ := app.Search("VALE3")
 
-	if !reflect.DeepEqual(*stockEntity, stock.StockEntityMockVALE3) {
+	if !reflect.DeepEqual(stockEntity, stock.StockEntityMockVALE3) {
 		t.Fatalf("Search should return a stock")
 	}
 }
@@ -35,7 +35,7 @@ func TestApp_StockSearch(t *testing.T) {
 
 // 	stockEntity, _ := app.Search("VALE3")
 
-// 	if !reflect.DeepEqual(*stockEntity, stock.StockEntityMockVALE3) {
+// 	if !reflect.DeepEqual(StockEntity, stock.StockEntityMockVALE3) {
 // 		t.Fatalf("Search should return a stock")
 // 	}
 // }

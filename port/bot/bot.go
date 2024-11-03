@@ -49,8 +49,6 @@ func StartBot() {
 
 			sb.WriteString("📈 Indicadores\n\n")
 
-			fmt.Println(stockEntity.Shares)
-
 			getIndicatorText(&sb, indicators[stock.PER_NAME])
 			getIndicatorText(&sb, indicators[stock.PBV_NAME])
 			getIndicatorText(&sb, indicators[stock.PROFIT_MARGIN_NAME])

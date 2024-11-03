@@ -17,7 +17,7 @@ func TestController_StockSearch(t *testing.T) {
 		t.Fatalf("should not return an error because ID stock is valid")
 	}
 
-	if !reflect.DeepEqual(*stockEntity, stock.StockEntityMockVALE3) {
+	if !reflect.DeepEqual(stockEntity, stock.StockEntityMockVALE3) {
 		t.Fatalf("Search should return a stock")
 	}
 }

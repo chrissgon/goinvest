@@ -33,21 +33,21 @@ func NewVisnoInvest() stock.StockSearchRepo {
 	return &VisnoInvest{}
 }
 
-func (v *VisnoInvest) Run(ID string) (*stock.StockEntity, error) {
+func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 	res, err := http.Get(url + ID)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, stock.ErrStockNotFound
+		return stock.StockEntity{}, stock.ErrStockNotFound
 	}
 
 	body, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	data := visnoInvestResponse{}
@@ -56,40 +56,40 @@ func (v *VisnoInvest) Run(ID string) (*stock.StockEntity, error) {
 	price, err := convertStringToFloat64(data.Metadata.Price)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	netProfit, err := convertStringToFloat64(data.MetricGroups[1].Metrics[6].Value)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	netRevenue, err := convertStringToFloat64(data.MetricGroups[1].Metrics[4].Value)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	netEquity, err := convertStringToFloat64(data.MetricGroups[1].Metrics[10].Value)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	netDebt, err := convertStringToFloat64(data.MetricGroups[1].Metrics[17].Value)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
 	lpa, err := convertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
 
 	if err != nil {
-		return nil, err
+		return stock.StockEntity{}, err
 	}
 
-	return &stock.StockEntity{
+	return stock.StockEntity{
 		Price:      price,
 		Company:    data.Metadata.Company,
 		NetProfit:  netProfit,

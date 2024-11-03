@@ -1,5 +1,5 @@
 package stock
 
 type StockSearchRepo interface {
-	Run(ID string) (*StockEntity, error)
+	Run(ID string) (StockEntity, error)
 }
