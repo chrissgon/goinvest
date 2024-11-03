@@ -106,11 +106,11 @@ func CheckStockID(ID string) error {
 
 	return nil
 }
-func (entity StockEntity) GetPER() *StockIndicator {
+func (entity StockEntity) GetPER() StockIndicator {
 	vps := ValuePerShare(entity.NetProfit, entity.Shares)
 	per := PER(entity.Price, vps)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  PER_NAME,
 		Label: PER_LABEL,
 		Mark:  PER_MARK,
@@ -119,11 +119,11 @@ func (entity StockEntity) GetPER() *StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetPBV() *StockIndicator {
+func (entity StockEntity) GetPBV() StockIndicator {
 	vps := ValuePerShare(entity.NetEquity, entity.Shares)
 	pbv := PBV(entity.Price, vps)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  PBV_NAME,
 		Label: PBV_LABEL,
 		Mark:  PBV_MARK,
@@ -132,10 +132,10 @@ func (entity StockEntity) GetPBV() *StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetProfitMargin() *StockIndicator {
+func (entity StockEntity) GetProfitMargin() StockIndicator {
 	margin := ProfitMargin(entity.NetProfit, entity.NetRevenue)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  PROFIT_MARGIN_NAME,
 		Label: PROFIT_MARGIN_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
@@ -144,10 +144,10 @@ func (entity StockEntity) GetProfitMargin() *StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetROE() *StockIndicator {
+func (entity StockEntity) GetROE() StockIndicator {
 	roe := ROE(entity.NetProfit, entity.NetEquity)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  ROE_NAME,
 		Label: ROE_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
@@ -156,10 +156,10 @@ func (entity StockEntity) GetROE() *StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetDebtRatio() *StockIndicator {
+func (entity StockEntity) GetDebtRatio() StockIndicator {
 	debt := DebtRatio(entity.NetDebt, entity.NetEquity)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  DEBIT_RATIO_NAME,
 		Label: DEBIT_RATIO_LABEL,
 		Mark:  DEBIT_RATIO_MARK,
@@ -168,10 +168,10 @@ func (entity StockEntity) GetDebtRatio() *StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetDividenYeld() *StockIndicator {
+func (entity StockEntity) GetDividenYeld() StockIndicator {
 	dividend := DividendYield(entity.Dividend, entity.Price)
 
-	return &StockIndicator{
+	return StockIndicator{
 		Name:  DIVIDEND_YELD_NAME,
 		Label: DIVIDEND_YELD_LABEL,
 		Mark:  DIVIDEND_YELD_MARK,

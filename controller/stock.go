@@ -15,6 +15,6 @@ func (StockController) Search(ID string) (stock.StockEntity, error) {
 	return stockApp.Search(ID)
 }
 
-func (StockController) Analyse(stockEntity stock.StockEntity) (map[string]*stock.StockIndicator, error) {
+func (StockController) Analyse(stockEntity stock.StockEntity) (map[string]stock.StockIndicator, error) {
 	return stockApp.Analyse(stockEntity)
 }

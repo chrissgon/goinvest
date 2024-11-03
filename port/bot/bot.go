@@ -94,7 +94,7 @@ func StartBot() {
 	<-sc
 }
 
-func getIndicatorText(sb *strings.Builder, indicator *stock.StockIndicator) {
+func getIndicatorText(sb *strings.Builder, indicator stock.StockIndicator) {
 	if indicator.Good {
 		sb.WriteString("✅ ")
 	} else {

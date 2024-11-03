@@ -24,14 +24,14 @@ func (app *StockApp) Search(ID string) (stock.StockEntity, error) {
 	return stockEntity, err
 }
 
-func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]*stock.StockIndicator, error) {
+func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]stock.StockIndicator, error) {
 	err := stockEntity.IsValid()
 
 	if err != nil {
 		return nil, err
 	}
 
-	indicators := map[string]*stock.StockIndicator{}
+	indicators := map[string]stock.StockIndicator{}
 
 	per := stockEntity.GetPER()
 	indicators[per.Name] = per
