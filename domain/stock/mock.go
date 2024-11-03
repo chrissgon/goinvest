@@ -1,5 +1,7 @@
 package stock
 
+import "github.com/chrissgon/goinvest/domain"
+
 type stockSearchRepoMock struct{}
 
 var StockEntityMockPETR4 = StockEntity{
@@ -38,7 +40,7 @@ var StockEntityMockYDUQ3 = StockEntity{
 	Dividend:   0.1745,
 }
 
-var StockIndicatorsMockVALE3 = map[string]StockIndicator{
+var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 	PER_NAME: {
 		Name:  PER_NAME,
 		Label: PER_LABEL,

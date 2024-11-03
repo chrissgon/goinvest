@@ -4,27 +4,21 @@ import (
 	"errors"
 	"math"
 	"regexp"
+
+	"github.com/chrissgon/goinvest/domain"
 )
 
 type StockEntity struct {
-	ID         string
-	Company    string
-	NetProfit  float64
-	NetRevenue float64
-	NetEquity  float64
-	NetDebt    float64
-	Price      float64
-	Dividend   float64
-	DividendYeld   float64
-	Shares     int
-}
-
-type StockIndicator struct {
-	Name  string
-	Label string
-	Mark  int
-	Value float64
-	Good  bool
+	ID            string
+	Company       string
+	NetProfit     float64
+	NetRevenue    float64
+	NetEquity     float64
+	NetDebt       float64
+	Price         float64
+	Dividend      float64
+	DividendYield float64
+	Shares        int
 }
 
 const PER_MARK = 15
@@ -48,8 +42,8 @@ const DEBIT_RATIO_NAME = "debitRatio"
 const DEBIT_RATIO_LABEL = "DL/PL (Dívida Líquida / Patrimônio Líquido)"
 
 const DIVIDEND_YELD_MARK = 2
-const DIVIDEND_YELD_NAME = "dividendYeld"
-const DIVIDEND_YELD_LABEL = "Dividend Yeld (Proventos por Ação / Preço da Ação)"
+const DIVIDEND_YELD_NAME = "dividendYield"
+const DIVIDEND_YELD_LABEL = "Dividend Yield (Proventos por Ação / Preço da Ação)"
 
 var ErrStockIDInvalid = errors.New("stock ID is invalid")
 var ErrStockNotFound = errors.New("stock not found")
@@ -60,7 +54,7 @@ var ErrStockNetEquityInvalid = errors.New("stock net equity is invalid")
 var ErrStockNetDebtInvalid = errors.New("stock net debt is invalid")
 var ErrStockNetPriceInvalid = errors.New("stock net price is invalid")
 var ErrStockNetSharesInvalid = errors.New("stock net shares is invalid")
-var ErrStockDividendYeldInvalid = errors.New("stock dividend yeld is invalid")
+var ErrStockDividendYieldInvalid = errors.New("stock dividend yield is invalid")
 
 func (entity *StockEntity) IsValid() error {
 	err := CheckStockID(entity.ID)
@@ -86,8 +80,8 @@ func (entity *StockEntity) IsValid() error {
 	if entity.Price == 0 {
 		return ErrStockNetPriceInvalid
 	}
-	if entity.Dividend == 0 && entity.DividendYeld == 0 {
-		return ErrStockDividendYeldInvalid
+	if entity.Dividend == 0 && entity.DividendYield == 0 {
+		return ErrStockDividendYieldInvalid
 	}
 	if entity.Shares == 0 {
 		return ErrStockNetSharesInvalid
@@ -96,11 +90,11 @@ func (entity *StockEntity) IsValid() error {
 	return nil
 }
 
-func (entity *StockEntity) GetPER() StockIndicator {
+func (entity *StockEntity) GetPER() domain.Indicator {
 	vps := ValuePerShare(entity.NetProfit, entity.Shares)
 	per := PER(entity.Price, vps)
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  PER_NAME,
 		Label: PER_LABEL,
 		Mark:  PER_MARK,
@@ -109,11 +103,11 @@ func (entity *StockEntity) GetPER() StockIndicator {
 	}
 }
 
-func (entity *StockEntity) GetPBV() StockIndicator {
+func (entity *StockEntity) GetPBV() domain.Indicator {
 	vps := ValuePerShare(entity.NetEquity, entity.Shares)
 	pbv := PBV(entity.Price, vps)
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  PBV_NAME,
 		Label: PBV_LABEL,
 		Mark:  PBV_MARK,
@@ -122,10 +116,10 @@ func (entity *StockEntity) GetPBV() StockIndicator {
 	}
 }
 
-func (entity *StockEntity) GetProfitMargin() StockIndicator {
+func (entity *StockEntity) GetProfitMargin() domain.Indicator {
 	margin := ProfitMargin(entity.NetProfit, entity.NetRevenue)
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  PROFIT_MARGIN_NAME,
 		Label: PROFIT_MARGIN_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
@@ -134,10 +128,10 @@ func (entity *StockEntity) GetProfitMargin() StockIndicator {
 	}
 }
 
-func (entity *StockEntity) GetROE() StockIndicator {
+func (entity *StockEntity) GetROE() domain.Indicator {
 	roe := ROE(entity.NetProfit, entity.NetEquity)
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  ROE_NAME,
 		Label: ROE_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
@@ -146,10 +140,10 @@ func (entity *StockEntity) GetROE() StockIndicator {
 	}
 }
 
-func (entity *StockEntity) GetDebtRatio() StockIndicator {
+func (entity *StockEntity) GetDebtRatio() domain.Indicator {
 	debt := DebtRatio(entity.NetDebt, entity.NetEquity)
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  DEBIT_RATIO_NAME,
 		Label: DEBIT_RATIO_LABEL,
 		Mark:  DEBIT_RATIO_MARK,
@@ -158,14 +152,14 @@ func (entity *StockEntity) GetDebtRatio() StockIndicator {
 	}
 }
 
-func (entity *StockEntity) GetDividenYeld() StockIndicator {
+func (entity *StockEntity) GetDividenYield() domain.Indicator {
 	dividend := DividendYield(entity.Dividend, entity.Price)
 
-	if entity.DividendYeld != 0 {
-		dividend = entity.DividendYeld
+	if entity.DividendYield != 0 {
+		dividend = entity.DividendYield
 	}
 
-	return StockIndicator{
+	return domain.Indicator{
 		Name:  DIVIDEND_YELD_NAME,
 		Label: DIVIDEND_YELD_LABEL,
 		Mark:  DIVIDEND_YELD_MARK,

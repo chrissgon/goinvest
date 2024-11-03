@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/chrissgon/goinvest/controller"
+	"github.com/chrissgon/goinvest/domain"
+	"github.com/chrissgon/goinvest/domain/fund"
 	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/lowbot"
 	"github.com/google/uuid"
@@ -62,6 +64,51 @@ func StartBot() {
 
 			return in, true
 		},
+		"SearchFund": func(interaction *lowbot.Interaction) (*lowbot.Interaction, bool) {
+			fundID := interaction.Parameters.Text
+			fundController := controller.FundController{}
+			fundEntity, err := fundController.Search(fundID)
+
+			if err != nil {
+				in := lowbot.NewInteractionMessageText("Não foi possível encontrar o fundo informado.")
+				in.SetTo(interaction.To)
+				in.SetFrom(interaction.From)
+				return in, false
+			}
+
+			indicators, err := fundController.Analyse(fundEntity)
+			
+			if err != nil {
+				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
+				in.SetTo(interaction.To)
+				in.SetFrom(interaction.From)
+				return in, false
+			}
+
+			sb := strings.Builder{}
+
+			sb.WriteString(fmt.Sprintf("🏢 %v - %v \n\n", fundEntity.ID, formatFloat64ToString(fundEntity.Price)))
+
+			sb.WriteString(fmt.Sprintf("Administrador (%v) \n", fundEntity.Administrator))
+			sb.WriteString(fmt.Sprintf("\nPatrimônio Líquido \n%v \n", formatFloat64ToString(fundEntity.NetEquity)))
+			sb.WriteString(fmt.Sprintf("\nÚltimo Rendimento \n%v \n", formatFloat64ToString(fundEntity.LastIncome)))
+			sb.WriteString(fmt.Sprintf("\nTaxa de Administração \n%v \n", formatFloat64ToString(fundEntity.AdministrationFee)))
+			sb.WriteString(fmt.Sprintf("\nTaxa de Performance \n%v \n", formatFloat64ToString(fundEntity.PerformanceFee)))
+			sb.WriteString(fmt.Sprintf("\nDividend Yield (Último 12 meses) \n%v \n", formatFloat64ToString(fundEntity.DividendYieldAnnual)))
+			sb.WriteString(fmt.Sprintf("\nTotal de Cotas \n%v \n \n", fundEntity.Shares))
+
+			sb.WriteString("📈 Indicadores\n\n")
+
+			getIndicatorText(&sb, indicators[fund.PBV_NAME])
+			getIndicatorText(&sb, indicators[fund.DIVIDEND_YELD_NAME])
+			getIndicatorText(&sb, indicators[fund.ADMINISTRATION_FEE_NAME])
+
+			in := lowbot.NewInteractionMessageText(sb.String())
+			in.SetTo(interaction.To)
+			in.SetFrom(interaction.From)
+
+			return in, true
+		},
 	})
 
 	channel, err := lowbot.NewTelegramChannel(os.Getenv("TELEGRAM_TOKEN"))
@@ -95,7 +142,7 @@ func StartBot() {
 	<-sc
 }
 
-func getIndicatorText(sb *strings.Builder, indicator stock.StockIndicator) {
+func getIndicatorText(sb *strings.Builder, indicator domain.Indicator) {
 	if indicator.Good {
 		sb.WriteString("✅ ")
 	} else {
@@ -105,7 +152,7 @@ func getIndicatorText(sb *strings.Builder, indicator stock.StockIndicator) {
 	sb.WriteString(fmt.Sprintf("Valor - %v \n", toFixed(indicator.Value, 2)))
 	sb.WriteString(fmt.Sprintf("Marca Sugerida - %v \n", toFixed(float64(indicator.Mark), 2)))
 
-	sb.WriteString("\n\n")
+	sb.WriteString("\n")
 }
 
 func round(num float64) int {

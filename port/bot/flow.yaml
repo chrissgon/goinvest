@@ -25,7 +25,7 @@ steps:
         -
       buttons:
         - Ações
-        # - Fundos
+        - Fundos
 
   wrongStockOrFund:
     next:
@@ -35,6 +35,7 @@ steps:
       texts:
         - Não pude entender sua resposta.
 
+  # stock
   stockInput:
     action: Input
     next:
@@ -57,3 +58,27 @@ steps:
     action: SearchStock
     next:
       default: stockInput
+
+  # fund
+  fundInput:
+    action: Input
+    next:
+      ^[a-zA-Z]{4}(11|12|13|14|15)$: fundSearch
+      default: wrongFundID
+    parameters:
+      texts:
+        - Por favor, digite o ticket do fundo que deseja buscar.
+        - Exemplo (MXRF11)
+
+  wrongFundID:
+    next:
+      default: fundInput
+    action: Text
+    parameters:
+      texts:
+        - Ticket informado incorreto.
+
+  fundSearch:
+    action: SearchFund
+    next:
+      default: fundInput

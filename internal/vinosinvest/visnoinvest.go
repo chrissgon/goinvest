@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/chrissgon/goinvest/domain/stock"
+	"github.com/chrissgon/goinvest/internal"
 )
 
 const url = "https://api.visnoinvest.com.br/stocks/details/"
@@ -34,6 +33,8 @@ func NewVisnoInvest() stock.StockSearchRepo {
 }
 
 func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
+	ID = strings.ToUpper(ID)
+
 	res, err := http.Get(url + ID)
 
 	if err != nil {
@@ -53,89 +54,57 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 	data := visnoInvestResponse{}
 	json.Unmarshal(body, &data)
 
-	price, err := convertStringToFloat64(data.Metadata.Price)
+	price, err := internal.ConvertStringToFloat64(data.Metadata.Price)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netProfit, err := convertStringToFloat64(data.MetricGroups[1].Metrics[6].Value)
+	netProfit, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[6].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netRevenue, err := convertStringToFloat64(data.MetricGroups[1].Metrics[4].Value)
+	netRevenue, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[4].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netEquity, err := convertStringToFloat64(data.MetricGroups[1].Metrics[10].Value)
+	netEquity, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[10].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netDebt, err := convertStringToFloat64(data.MetricGroups[1].Metrics[17].Value)
+	netDebt, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[17].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	dividendYeld, err := convertStringToFloat64(data.MetricGroups[1].Metrics[13].Value)
+	dividendYield, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[13].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	lpa, err := convertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
+	lpa, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
 	return stock.StockEntity{
-		Price:        price,
-		Company:      data.Metadata.Company,
-		NetProfit:    netProfit,
-		NetRevenue:   netRevenue,
-		NetEquity:    netEquity,
-		NetDebt:      netDebt,
-		Shares:       int(netProfit / lpa),
-		DividendYeld: dividendYeld,
+		ID:            ID,
+		Price:         price,
+		Company:       data.Metadata.Company,
+		NetProfit:     netProfit,
+		NetRevenue:    netRevenue,
+		NetEquity:     netEquity,
+		NetDebt:       netDebt,
+		Shares:        int(netProfit / lpa),
+		DividendYield: dividendYield,
 	}, nil
-}
-
-func convertStringToFloat64(s string) (float64, error) {
-	// Remove currency symbol and any whitespace
-	s = strings.TrimSpace(strings.TrimPrefix(s, "R$"))
-
-	// Remove thousands separators
-	s = strings.ReplaceAll(s, ".", "")
-
-	// Replace comma with dot for decimal point
-	s = strings.ReplaceAll(s, ",", ".")
-
-	// Extract the numeric part
-	re := regexp.MustCompile(`[\d.]+`)
-	numStr := re.FindString(s)
-
-	// Convert to float64
-	value, err := strconv.ParseFloat(numStr, 64)
-
-	if err != nil {
-		return 0, err
-	}
-
-	// Handle suffix (M for million, B for billion, etc.)
-	if strings.Contains(s, "K") {
-		value *= 1e3
-	} else if strings.Contains(s, "M") {
-		value *= 1e6
-	} else if strings.Contains(s, "B") {
-		value *= 1e9
-	}
-
-	return value, nil
 }

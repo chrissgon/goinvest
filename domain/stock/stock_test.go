@@ -267,39 +267,39 @@ func TestDomain_StockGetDebtRatio(t *testing.T) {
 	}
 }
 
-func TestDomain_StockGetDividenYeld(t *testing.T) {
+func TestDomain_StockGetDividenYield(t *testing.T) {
 	stock := StockEntityMockVALE3
 
-	dividend := stock.GetDividenYeld()
+	dividend := stock.GetDividenYield()
 
 	if dividend.Name != DIVIDEND_YELD_NAME {
-		t.Fatalf("GetDividenYeld should return a struct with Name %v, but got %v", DIVIDEND_YELD_NAME, dividend.Name)
+		t.Fatalf("GetDividenYield should return a struct with Name %v, but got %v", DIVIDEND_YELD_NAME, dividend.Name)
 	}
 
 	if dividend.Mark != DIVIDEND_YELD_MARK {
-		t.Fatalf("GetDividenYeld should return a struct with Mark %v, but got %v", DIVIDEND_YELD_MARK, dividend.Mark)
+		t.Fatalf("GetDividenYield should return a struct with Mark %v, but got %v", DIVIDEND_YELD_MARK, dividend.Mark)
 	}
 
 	value := 11.790651744568795
 	if dividend.Value != value {
-		t.Fatalf("GetDividenYeld should return a struct with Value %v, but got %v", value, dividend.Value)
+		t.Fatalf("GetDividenYield should return a struct with Value %v, but got %v", value, dividend.Value)
 	}
 
 	if !dividend.Good {
-		t.Fatalf("GetDividenYeld Good property should be true, but got false")
+		t.Fatalf("GetDividenYield Good property should be true, but got false")
 	}
 
 	stock = StockEntityMockYDUQ3
 
-	dividend = stock.GetDividenYeld()
+	dividend = stock.GetDividenYield()
 
 	value = 1.7041015625
 	if dividend.Value != value {
-		t.Fatalf("GetDividenYeld should return a struct with Value %v, but got %v", value, dividend.Value)
+		t.Fatalf("GetDividenYield should return a struct with Value %v, but got %v", value, dividend.Value)
 	}
 
 	if dividend.Good {
-		t.Fatalf("GetDividenYeld Good property should be false, but got true")
+		t.Fatalf("GetDividenYield Good property should be false, but got true")
 	}
 }
 

@@ -1,18 +1,15 @@
-package vinosinvest
+package fiis
 
 import (
 	"reflect"
 	"testing"
 )
 
-type visnoInvestMock struct{}
-
-func TestNewVisnoInvest(t *testing.T){
-	have := NewVisnoInvest()
-	expected := &VisnoInvest{}
+func TestNewFiis(t *testing.T) {
+	have := NewFiis()
+	expected := &Fiis{}
 
 	if !reflect.DeepEqual(have, expected) {
 		t.Fatalf("convertStringToFloat64 should return %v but got %v", expected, have)
 	}
 }
-

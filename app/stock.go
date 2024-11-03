@@ -1,6 +1,11 @@
 package app
 
-import "github.com/chrissgon/goinvest/domain/stock"
+import (
+	"strings"
+
+	"github.com/chrissgon/goinvest/domain"
+	"github.com/chrissgon/goinvest/domain/stock"
+)
 
 type StockApp struct {
 	searchRepo stock.StockSearchRepo
@@ -11,6 +16,8 @@ func NewStockApp(searchRepo stock.StockSearchRepo) StockApp {
 }
 
 func (app *StockApp) Search(ID string) (stock.StockEntity, error) {
+	ID = strings.ToUpper(ID)
+
 	err := stock.CheckStockID(ID)
 
 	if err != nil {
@@ -24,14 +31,14 @@ func (app *StockApp) Search(ID string) (stock.StockEntity, error) {
 	return stockEntity, err
 }
 
-func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]stock.StockIndicator, error) {
+func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]domain.Indicator, error) {
 	err := stockEntity.IsValid()
 
 	if err != nil {
 		return nil, err
 	}
 
-	indicators := map[string]stock.StockIndicator{}
+	indicators := map[string]domain.Indicator{}
 
 	per := stockEntity.GetPER()
 	indicators[per.Name] = per
@@ -48,8 +55,8 @@ func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]stock.St
 	debt := stockEntity.GetDebtRatio()
 	indicators[debt.Name] = debt
 
-	dividendYeld := stockEntity.GetDividenYeld()
-	indicators[dividendYeld.Name] = dividendYeld
+	dividendYield := stockEntity.GetDividenYield()
+	indicators[dividendYield.Name] = dividendYield
 
 	return indicators, nil
 }

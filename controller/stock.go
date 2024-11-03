@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/chrissgon/goinvest/app"
+	"github.com/chrissgon/goinvest/domain"
 	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/goinvest/internal/vinosinvest"
 )
@@ -15,6 +16,6 @@ func (StockController) Search(ID string) (stock.StockEntity, error) {
 	return stockApp.Search(ID)
 }
 
-func (StockController) Analyse(stockEntity stock.StockEntity) (map[string]stock.StockIndicator, error) {
+func (StockController) Analyse(stockEntity stock.StockEntity) (map[string]domain.Indicator, error) {
 	return stockApp.Analyse(stockEntity)
 }
