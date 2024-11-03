@@ -38,6 +38,44 @@ var StockEntityMockYDUQ3 = StockEntity{
 	Dividend:   0.1745,
 }
 
+var StockIndicatorsMockVALE3 = map[string]StockIndicator{
+	PER_NAME: {
+		Name:  PER_NAME,
+		Label: PER_LABEL,
+		Mark:  PER_MARK,
+		Value: 0.9801580900145184,
+		Good:  true,
+	},
+	PBV_NAME: {
+		Name:  PBV_NAME,
+		Label: PBV_LABEL,
+		Mark:  PBV_MARK,
+		Value: 0.23246738340283887,
+		Good:  true,
+	},
+	PROFIT_MARGIN_NAME: {
+		Name:  PROFIT_MARGIN_NAME,
+		Label: PROFIT_MARGIN_LABEL,
+		Mark:  PROFIT_MARGIN_MARK,
+		Value: 23.194821267076016,
+		Good:  true,
+	},
+	ROE_NAME: {
+		Name:  ROE_NAME,
+		Label: ROE_LABEL,
+		Mark:  ROE_MARK,
+		Value: 23.718666342175712,
+		Good:  true,
+	},
+	DEBIT_RATIO_NAME: {
+		Name:  DEBIT_RATIO_NAME,
+		Label: DEBIT_RATIO_LABEL,
+		Mark:  DEBIT_RATIO_MARK,
+		Value: 23.24653200292042,
+		Good:  true,
+	},
+}
+
 func NewStockSearchRepoMock() StockSearchRepo {
 	return &stockSearchRepoMock{}
 }
