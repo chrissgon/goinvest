@@ -74,6 +74,13 @@ var StockIndicatorsMockVALE3 = map[string]StockIndicator{
 		Value: 23.24653200292042,
 		Good:  true,
 	},
+	DIVIDEND_YELD_NAME: {
+		Name:  DIVIDEND_YELD_NAME,
+		Label: DIVIDEND_YELD_LABEL,
+		Mark:  DIVIDEND_YELD_MARK,
+		Value: 11.790651744568795,
+		Good:  true,
+	},
 }
 
 func NewStockSearchRepoMock() StockSearchRepo {

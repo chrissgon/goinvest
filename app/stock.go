@@ -48,8 +48,8 @@ func (app *StockApp) Analyse(stockEntity stock.StockEntity) (map[string]stock.St
 	debt := stockEntity.GetDebtRatio()
 	indicators[debt.Name] = debt
 
-	// dividend := stockEntity.GetDividenYeld()
-	// indicators[dividend.Name] = dividend
+	dividendYeld := stockEntity.GetDividenYeld()
+	indicators[dividendYeld.Name] = dividendYeld
 
 	return indicators, nil
 }

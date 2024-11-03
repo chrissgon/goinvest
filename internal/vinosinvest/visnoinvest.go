@@ -83,6 +83,12 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 		return stock.StockEntity{}, err
 	}
 
+	dividendYeld, err := convertStringToFloat64(data.MetricGroups[1].Metrics[13].Value)
+
+	if err != nil {
+		return stock.StockEntity{}, err
+	}
+
 	lpa, err := convertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
 
 	if err != nil {
@@ -90,13 +96,14 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 	}
 
 	return stock.StockEntity{
-		Price:      price,
-		Company:    data.Metadata.Company,
-		NetProfit:  netProfit,
-		NetRevenue: netRevenue,
-		NetEquity:  netEquity,
-		NetDebt:    netDebt,
-		Shares:     int(netProfit / lpa),
+		Price:        price,
+		Company:      data.Metadata.Company,
+		NetProfit:    netProfit,
+		NetRevenue:   netRevenue,
+		NetEquity:    netEquity,
+		NetDebt:      netDebt,
+		Shares:       int(netProfit / lpa),
+		DividendYeld: dividendYeld,
 	}, nil
 }
 

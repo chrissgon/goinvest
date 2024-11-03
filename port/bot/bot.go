@@ -54,6 +54,7 @@ func StartBot() {
 			getIndicatorText(&sb, indicators[stock.PROFIT_MARGIN_NAME])
 			getIndicatorText(&sb, indicators[stock.ROE_NAME])
 			getIndicatorText(&sb, indicators[stock.DEBIT_RATIO_NAME])
+			getIndicatorText(&sb, indicators[stock.DIVIDEND_YELD_NAME])
 
 			in := lowbot.NewInteractionMessageText(sb.String())
 			in.SetTo(interaction.To)

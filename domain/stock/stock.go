@@ -15,6 +15,7 @@ type StockEntity struct {
 	NetDebt    float64
 	Price      float64
 	Dividend   float64
+	DividendYeld   float64
 	Shares     int
 }
 
@@ -59,8 +60,9 @@ var ErrStockNetEquityInvalid = errors.New("stock net equity is invalid")
 var ErrStockNetDebtInvalid = errors.New("stock net debt is invalid")
 var ErrStockNetPriceInvalid = errors.New("stock net price is invalid")
 var ErrStockNetSharesInvalid = errors.New("stock net shares is invalid")
+var ErrStockDividendYeldInvalid = errors.New("stock dividend yeld is invalid")
 
-func (entity StockEntity) IsValid() error {
+func (entity *StockEntity) IsValid() error {
 	err := CheckStockID(entity.ID)
 
 	if err != nil {
@@ -84,29 +86,17 @@ func (entity StockEntity) IsValid() error {
 	if entity.Price == 0 {
 		return ErrStockNetPriceInvalid
 	}
-	// if entity.Dividend == 0 {
-	// 	return false
-	// }
+	if entity.Dividend == 0 && entity.DividendYeld == 0 {
+		return ErrStockDividendYeldInvalid
+	}
 	if entity.Shares == 0 {
 		return ErrStockNetSharesInvalid
 	}
 
 	return nil
 }
-func CheckStockID(ID string) error {
-	matched, err := regexp.MatchString("^[a-zA-Z]{4}[0-9]{1,2}$", ID)
 
-	if err != nil {
-		return err
-	}
-
-	if !matched {
-		return ErrStockIDInvalid
-	}
-
-	return nil
-}
-func (entity StockEntity) GetPER() StockIndicator {
+func (entity *StockEntity) GetPER() StockIndicator {
 	vps := ValuePerShare(entity.NetProfit, entity.Shares)
 	per := PER(entity.Price, vps)
 
@@ -119,7 +109,7 @@ func (entity StockEntity) GetPER() StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetPBV() StockIndicator {
+func (entity *StockEntity) GetPBV() StockIndicator {
 	vps := ValuePerShare(entity.NetEquity, entity.Shares)
 	pbv := PBV(entity.Price, vps)
 
@@ -132,7 +122,7 @@ func (entity StockEntity) GetPBV() StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetProfitMargin() StockIndicator {
+func (entity *StockEntity) GetProfitMargin() StockIndicator {
 	margin := ProfitMargin(entity.NetProfit, entity.NetRevenue)
 
 	return StockIndicator{
@@ -144,7 +134,7 @@ func (entity StockEntity) GetProfitMargin() StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetROE() StockIndicator {
+func (entity *StockEntity) GetROE() StockIndicator {
 	roe := ROE(entity.NetProfit, entity.NetEquity)
 
 	return StockIndicator{
@@ -156,7 +146,7 @@ func (entity StockEntity) GetROE() StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetDebtRatio() StockIndicator {
+func (entity *StockEntity) GetDebtRatio() StockIndicator {
 	debt := DebtRatio(entity.NetDebt, entity.NetEquity)
 
 	return StockIndicator{
@@ -168,8 +158,12 @@ func (entity StockEntity) GetDebtRatio() StockIndicator {
 	}
 }
 
-func (entity StockEntity) GetDividenYeld() StockIndicator {
+func (entity *StockEntity) GetDividenYeld() StockIndicator {
 	dividend := DividendYield(entity.Dividend, entity.Price)
+
+	if entity.DividendYeld != 0 {
+		dividend = entity.DividendYeld
+	}
 
 	return StockIndicator{
 		Name:  DIVIDEND_YELD_NAME,
@@ -178,6 +172,20 @@ func (entity StockEntity) GetDividenYeld() StockIndicator {
 		Value: dividend,
 		Good:  GoodDividendYield(dividend),
 	}
+}
+
+func CheckStockID(ID string) error {
+	matched, err := regexp.MatchString("^[a-zA-Z]{4}[0-9]{1,2}$", ID)
+
+	if err != nil {
+		return err
+	}
+
+	if !matched {
+		return ErrStockIDInvalid
+	}
+
+	return nil
 }
 
 func ValuePerShare(value float64, shares int) float64 {
