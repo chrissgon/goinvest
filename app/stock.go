@@ -6,8 +6,8 @@ type StockApp struct {
 	searchRepo stock.StockSearchRepo
 }
 
-func NewStockApp(searchRepo stock.StockSearchRepo) *StockApp {
-	return &StockApp{searchRepo}
+func NewStockApp(searchRepo stock.StockSearchRepo) StockApp {
+	return StockApp{searchRepo}
 }
 
 func (app *StockApp) Search(ID string) (stock.StockEntity, error) {
