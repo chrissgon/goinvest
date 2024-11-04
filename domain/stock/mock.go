@@ -90,6 +90,5 @@ func NewStockSearchRepoMock() StockSearchRepo {
 }
 
 func (v *stockSearchRepoMock) Run(ID string) (StockEntity, error) {
-	stock := StockEntityMockVALE3
-	return stock, nil
+	return StockEntityMockVALE3, nil
 }

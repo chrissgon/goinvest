@@ -2,7 +2,6 @@ package stock
 
 import (
 	"errors"
-	"math"
 	"regexp"
 
 	"github.com/chrissgon/goinvest/domain"
@@ -91,7 +90,7 @@ func (entity *StockEntity) IsValid() error {
 }
 
 func (entity *StockEntity) GetPER() domain.Indicator {
-	vps := ValuePerShare(entity.NetProfit, entity.Shares)
+	vps := domain.ValuePerShare(entity.NetProfit, entity.Shares)
 	per := PER(entity.Price, vps)
 
 	return domain.Indicator{
@@ -104,7 +103,7 @@ func (entity *StockEntity) GetPER() domain.Indicator {
 }
 
 func (entity *StockEntity) GetPBV() domain.Indicator {
-	vps := ValuePerShare(entity.NetEquity, entity.Shares)
+	vps := domain.ValuePerShare(entity.NetEquity, entity.Shares)
 	pbv := PBV(entity.Price, vps)
 
 	return domain.Indicator{
@@ -169,7 +168,7 @@ func (entity *StockEntity) GetDividenYield() domain.Indicator {
 }
 
 func CheckStockID(ID string) error {
-	matched, err := regexp.MatchString("^[a-zA-Z]{4}[0-9]{1,2}$", ID)
+	matched, err := regexp.MatchString("^[a-zA-Z]{4}(1|2|3|4|5|6|7|8|9|10|11)$", ID)
 
 	if err != nil {
 		return err
@@ -180,10 +179,6 @@ func CheckStockID(ID string) error {
 	}
 
 	return nil
-}
-
-func ValuePerShare(value float64, shares int) float64 {
-	return math.Floor((value/float64(shares))*100) / 100
 }
 func PER(stockPrice, vps float64) float64 {
 	return stockPrice / vps

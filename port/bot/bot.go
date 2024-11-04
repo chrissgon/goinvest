@@ -77,6 +77,8 @@ func StartBot() {
 			}
 
 			indicators, err := fundController.Analyse(fundEntity)
+
+			fmt.Println(err)
 			
 			if err != nil {
 				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
@@ -92,15 +94,15 @@ func StartBot() {
 			sb.WriteString(fmt.Sprintf("Administrador (%v) \n", fundEntity.Administrator))
 			sb.WriteString(fmt.Sprintf("\nPatrimônio Líquido \n%v \n", formatFloat64ToString(fundEntity.NetEquity)))
 			sb.WriteString(fmt.Sprintf("\nÚltimo Rendimento \n%v \n", formatFloat64ToString(fundEntity.LastIncome)))
-			sb.WriteString(fmt.Sprintf("\nTaxa de Administração \n%v \n", formatFloat64ToString(fundEntity.AdministrationFee)))
-			sb.WriteString(fmt.Sprintf("\nTaxa de Performance \n%v \n", formatFloat64ToString(fundEntity.PerformanceFee)))
-			sb.WriteString(fmt.Sprintf("\nDividend Yield (Último 12 meses) \n%v \n", formatFloat64ToString(fundEntity.DividendYieldAnnual)))
+			sb.WriteString(fmt.Sprintf("\nTaxa de Administração \n%v%% \n", fundEntity.AdministrationFee))
+			sb.WriteString(fmt.Sprintf("\nTaxa de Performance \n%v%% \n", fundEntity.PerformanceFee))
+			sb.WriteString(fmt.Sprintf("\nDividend Yield (Último 12 meses) \n%v%% \n", fundEntity.DividendYieldAnnual))
 			sb.WriteString(fmt.Sprintf("\nTotal de Cotas \n%v \n \n", fundEntity.Shares))
 
 			sb.WriteString("📈 Indicadores\n\n")
 
 			getIndicatorText(&sb, indicators[fund.PBV_NAME])
-			getIndicatorText(&sb, indicators[fund.DIVIDEND_YELD_NAME])
+			getIndicatorText(&sb, indicators[fund.DIVIDEND_YELD_MONTH_NAME])
 			getIndicatorText(&sb, indicators[fund.ADMINISTRATION_FEE_NAME])
 
 			in := lowbot.NewInteractionMessageText(sb.String())

@@ -2,7 +2,7 @@ package internal
 
 import "testing"
 
-func TestConvertStringToFloat64(t *testing.T) {
+func TestInternal_HelperConvertStringToFloat64(t *testing.T) {
 	have, _ := ConvertStringToFloat64("R$ 32,30")
 	expected := 32.30
 
@@ -35,5 +35,14 @@ func TestConvertStringToFloat64(t *testing.T) {
 
 	if err == nil {
 		t.Fatalf("ConvertStringToFloat64 should return an error because the param is invalid")
+	}
+}
+
+func TestInternal_Normalization(t *testing.T) {
+	have := Normalization("áéíóúãõâêîôû ÁÉÍÓÚÃÕÂÊÎÔÛ")
+	expected := "aeiouaoaeiou AEIOUAOAEIOU"
+
+	if have != expected {
+		t.Fatalf("Normalization should return %v but got %v", expected, have)
 	}
 }

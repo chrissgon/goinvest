@@ -3,6 +3,8 @@ package stock
 import (
 	"errors"
 	"testing"
+
+	"github.com/chrissgon/goinvest/domain"
 )
 
 func TestDomain_StockIsValid(t *testing.T) {
@@ -67,6 +69,16 @@ func TestDomain_StockIsValid(t *testing.T) {
 
 	if !errors.Is(err, ErrStockNetPriceInvalid) {
 		t.Fatalf("stock IsValid should return the error: %v, but got %v", ErrStockNetPriceInvalid, err)
+	}
+
+	stock = StockEntityMockVALE3
+	stock.Dividend = 0
+	stock.DividendYield = 0
+
+	err = stock.IsValid()
+
+	if !errors.Is(err, ErrStockDividendYieldInvalid) {
+		t.Fatalf("stock IsValid should return the error: %v, but got %v", ErrStockDividendYieldInvalid, err)
 	}
 
 	stock = StockEntityMockVALE3
@@ -289,6 +301,15 @@ func TestDomain_StockGetDividenYield(t *testing.T) {
 		t.Fatalf("GetDividenYield Good property should be true, but got false")
 	}
 
+	stock.DividendYield = 1
+
+	dividend = stock.GetDividenYield()
+
+	value = 1
+	if dividend.Value != value {
+		t.Fatalf("GetDividenYield should return a struct with Value %v, but got %v", value, dividend.Value)
+	}
+
 	stock = StockEntityMockYDUQ3
 
 	dividend = stock.GetDividenYield()
@@ -301,6 +322,7 @@ func TestDomain_StockGetDividenYield(t *testing.T) {
 	if dividend.Good {
 		t.Fatalf("GetDividenYield Good property should be false, but got true")
 	}
+
 }
 
 func TestDomain_StockCheckStockID(t *testing.T) {
@@ -317,17 +339,8 @@ func TestDomain_StockCheckStockID(t *testing.T) {
 	}
 }
 
-func TestDomain_StockValuePerShare(t *testing.T) {
-	have := ValuePerShare(31643000000.00, 13044496930)
-	expected := 2.42
-
-	if have != expected {
-		t.Fatalf("ValuePerShare should return %v but got %v", expected, have)
-	}
-}
-
 func TestDomain_StockPER(t *testing.T) {
-	vps := ValuePerShare(StockEntityMockVALE3.NetProfit, StockEntityMockVALE3.Shares)
+	vps := domain.ValuePerShare(StockEntityMockVALE3.NetProfit, StockEntityMockVALE3.Shares)
 	have := PER(StockEntityMockVALE3.Price, vps)
 	expected := 0.9801580900145184
 
@@ -337,7 +350,7 @@ func TestDomain_StockPER(t *testing.T) {
 }
 
 func TestDomain_StockPBV(t *testing.T) {
-	vps := ValuePerShare(StockEntityMockVALE3.NetEquity, StockEntityMockVALE3.Shares)
+	vps := domain.ValuePerShare(StockEntityMockVALE3.NetEquity, StockEntityMockVALE3.Shares)
 	have := PBV(StockEntityMockVALE3.Price, vps)
 	expected := 0.23246738340283887
 
@@ -382,14 +395,14 @@ func TestDomain_StockDividendYield(t *testing.T) {
 }
 
 func TestDomain_StockGoodPER(t *testing.T) {
-	vps := ValuePerShare(StockEntityMockVALE3.NetProfit, StockEntityMockVALE3.Shares)
+	vps := domain.ValuePerShare(StockEntityMockVALE3.NetProfit, StockEntityMockVALE3.Shares)
 	per := PER(StockEntityMockVALE3.Price, vps)
 
 	if !GoodPER(per) {
 		t.Fatalf("GoodPER should return true, but got false")
 	}
 
-	vps = ValuePerShare(StockEntityMockYDUQ3.NetProfit, StockEntityMockYDUQ3.Shares)
+	vps = domain.ValuePerShare(StockEntityMockYDUQ3.NetProfit, StockEntityMockYDUQ3.Shares)
 	per = PER(StockEntityMockYDUQ3.Price, vps)
 
 	if GoodPER(per) {
@@ -398,14 +411,14 @@ func TestDomain_StockGoodPER(t *testing.T) {
 }
 
 func TestDomain_StockGoodPBV(t *testing.T) {
-	vps := ValuePerShare(StockEntityMockVALE3.NetEquity, StockEntityMockVALE3.Shares)
+	vps := domain.ValuePerShare(StockEntityMockVALE3.NetEquity, StockEntityMockVALE3.Shares)
 	pbv := PBV(StockEntityMockVALE3.Price, vps)
 
 	if !GoodPBV(pbv) {
 		t.Fatalf("GoodPBV should return true, but got false")
 	}
 
-	vps = ValuePerShare(StockEntityMockYDUQ3.NetEquity, StockEntityMockYDUQ3.Shares)
+	vps = domain.ValuePerShare(StockEntityMockYDUQ3.NetEquity, StockEntityMockYDUQ3.Shares)
 	pbv = PBV(StockEntityMockYDUQ3.Price, vps)
 
 	if GoodPBV(pbv) {

@@ -57,7 +57,7 @@ steps:
   stockSearch:
     action: SearchStock
     next:
-      default: stockInput
+      default: stockOrFund
 
   # fund
   fundInput:
@@ -81,4 +81,4 @@ steps:
   fundSearch:
     action: SearchFund
     next:
-      default: fundInput
+      default: stockOrFund

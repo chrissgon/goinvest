@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestNewFiis(t *testing.T) {
+func TestInternal_NewFiis(t *testing.T) {
 	have := NewFiis()
 	expected := &Fiis{}
 

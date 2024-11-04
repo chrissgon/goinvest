@@ -43,8 +43,8 @@ func (app *FundApp) Analyse(fundEntity fund.FundEntity) (map[string]domain.Indic
 	pbv := fundEntity.GetPBV()
 	indicators[pbv.Name] = pbv
 
-	dividendYield := fundEntity.GetDividenYield()
-	indicators[dividendYield.Name] = dividendYield
+	dym := fundEntity.GetDividenYieldMonth()
+	indicators[dym.Name] = dym
 
 	administrationFee := fundEntity.GetAdministrationFee()
 	indicators[administrationFee.Name] = administrationFee

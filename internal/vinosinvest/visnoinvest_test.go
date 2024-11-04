@@ -5,9 +5,7 @@ import (
 	"testing"
 )
 
-type visnoInvestMock struct{}
-
-func TestNewVisnoInvest(t *testing.T){
+func TestInternal_NewVisnoInvest(t *testing.T){
 	have := NewVisnoInvest()
 	expected := &VisnoInvest{}
 
