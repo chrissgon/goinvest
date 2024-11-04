@@ -16,6 +16,8 @@ import (
 )
 
 func StartBot() {
+	lowbot.DEBUG = true
+
 	lowbot.SetCustomActions(lowbot.ActionsMap{
 		"SearchStock": func(interaction *lowbot.Interaction) (*lowbot.Interaction, bool) {
 			stockID := interaction.Parameters.Text
@@ -79,7 +81,7 @@ func StartBot() {
 			indicators, err := fundController.Analyse(fundEntity)
 
 			fmt.Println(err)
-			
+
 			if err != nil {
 				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
 				in.SetTo(interaction.To)

@@ -15,17 +15,14 @@ steps:
 
   stockOrFund:
     next:
-      1: stockInput
-      2: fundInput
+      ^[a-zA-Z]{4}(1|2|3|4|5|6|7|8|9|10|11)$: stockSearch
+      ^[a-zA-Z]{4}(11|12|13|14|15)$: fundSearch
       default: wrongStockOrFund
-    action: Button
+    action: Input
     parameters:
       texts:
-        - Sobre o que deseja pesquisar?
+        - Digite o ticket de uma Ação (PETR4) ou FII (MXRF11) para iniciar a busca.
         -
-      buttons:
-        - Ações
-        - Fundos
 
   wrongStockOrFund:
     next:
@@ -33,18 +30,18 @@ steps:
     action: Text
     parameters:
       texts:
-        - Não pude entender sua resposta.
+        - O ticket informado não existe. Por favor tente outro.
 
   # stock
-  stockInput:
-    action: Input
-    next:
-      ^[a-zA-Z]{4}[0-9]{1,2}$: stockSearch
-      default: wrongStockID
-    parameters:
-      texts:
-        - Por favor, digite o ticket da ação que deseja buscar.
-        - Exemplo (PETR4)
+  # stockInput:
+  #   action: Input
+  #   next:
+  #     ^[a-zA-Z]{4}[0-9]{1,2}$: stockSearch
+  #     default: wrongStockID
+  #   parameters:
+  #     texts:
+  #       - Por favor, digite o ticket da ação que deseja buscar.
+  #       - Exemplo (PETR4)
 
   wrongStockID:
     next:
@@ -60,23 +57,23 @@ steps:
       default: stockOrFund
 
   # fund
-  fundInput:
-    action: Input
-    next:
-      ^[a-zA-Z]{4}(11|12|13|14|15)$: fundSearch
-      default: wrongFundID
-    parameters:
-      texts:
-        - Por favor, digite o ticket do fundo que deseja buscar.
-        - Exemplo (MXRF11)
+  # fundInput:
+  #   action: Input
+  #   next:
+  #     ^[a-zA-Z]{4}(11|12|13|14|15)$: fundSearch
+  #     default: wrongFundID
+  #   parameters:
+  #     texts:
+  #       - Por favor, digite o ticket do fundo que deseja buscar.
+  #       - Exemplo (MXRF11)
 
-  wrongFundID:
-    next:
-      default: fundInput
-    action: Text
-    parameters:
-      texts:
-        - Ticket informado incorreto.
+  # wrongFundID:
+  #   next:
+  #     default: fundInput
+  #   action: Text
+  #   parameters:
+  #     texts:
+  #       - Ticket informado incorreto.
 
   fundSearch:
     action: SearchFund
