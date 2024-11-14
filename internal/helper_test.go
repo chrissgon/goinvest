@@ -46,3 +46,26 @@ func TestInternal_Normalization(t *testing.T) {
 		t.Fatalf("Normalization should return %v but got %v", expected, have)
 	}
 }
+
+func TestInternal_ConvertTaxStringToFloat64(t *testing.T) {
+	have, _ := ConvertTaxStringToFloat64("0.6")
+	expected := 0.6
+
+	if have != expected {
+		t.Fatalf("ConvertTaxStringToFloat64 should return %v but got %v", expected, have)
+	}
+	
+	have, _ = ConvertTaxStringToFloat64("1.2")
+	expected = 1.2
+
+	if have != expected {
+		t.Fatalf("ConvertTaxStringToFloat64 should return %v but got %v", expected, have)
+	}
+	
+	have, _ = ConvertTaxStringToFloat64("0,9")
+	expected = 0.9
+
+	if have != expected {
+		t.Fatalf("ConvertTaxStringToFloat64 should return %v but got %v", expected, have)
+	}
+}

@@ -9,6 +9,11 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+func ConvertTaxStringToFloat64(s string) (float64, error) {
+	s = strings.ReplaceAll(s, ",", ".")
+	return strconv.ParseFloat(s, 64)
+}
+
 func ConvertStringToFloat64(s string) (float64, error) {
 	// Remove currency symbol and any whitespace
 	s = strings.TrimSpace(strings.TrimPrefix(s, "R$"))

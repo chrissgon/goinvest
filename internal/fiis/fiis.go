@@ -102,10 +102,10 @@ func getTaxes(text string) (admFee float64, prfFee float64) {
 	prfResp := prfRegex.FindAllStringSubmatch(text, -1)
 
 	if len(admResp) > 0 && len(admResp[0]) > 2 {
-		admFee, _ = internal.ConvertStringToFloat64(admResp[0][2])
+		admFee, _ = internal.ConvertTaxStringToFloat64(admResp[0][2])
 	}
 	if len(prfResp) > 0 && len(prfResp[0]) > 2 {
-		prfFee, _ = internal.ConvertStringToFloat64(prfResp[0][2])
+		prfFee, _ = internal.ConvertTaxStringToFloat64(prfResp[0][2])
 	}
 
 	return

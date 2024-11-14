@@ -168,7 +168,7 @@ func (entity *StockEntity) GetDividenYield() domain.Indicator {
 }
 
 func CheckStockID(ID string) error {
-	matched, err := regexp.MatchString("^[a-zA-Z]{4}(1|2|3|4|5|6|7|8|9|10|11)$", ID)
+	matched, err := regexp.MatchString("^[a-zA-Z]{4}(3|4)$", ID)
 
 	if err != nil {
 		return err

@@ -97,7 +97,7 @@ func (entity *FundEntity) GetAdministrationFee() domain.Indicator {
 }
 
 func CheckFundID(ID string) error {
-	matched, err := regexp.MatchString("^[a-zA-Z]{4}(11|12|13|14|15)$", ID)
+	matched, err := regexp.MatchString("^[a-zA-Z]{4}(11)$", ID)
 
 	if err != nil {
 		return err
