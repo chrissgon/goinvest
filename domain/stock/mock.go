@@ -46,6 +46,7 @@ var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 		Label: PER_LABEL,
 		Mark:  PER_MARK,
 		Value: 0.9801580900145184,
+		Operator: PER_OPERATOR,
 		Good:  true,
 	},
 	PBV_NAME: {
@@ -53,6 +54,7 @@ var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 		Label: PBV_LABEL,
 		Mark:  PBV_MARK,
 		Value: 0.23246738340283887,
+		Operator: PBV_OPERATOR,
 		Good:  true,
 	},
 	PROFIT_MARGIN_NAME: {
@@ -60,6 +62,7 @@ var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 		Label: PROFIT_MARGIN_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
 		Value: 23.194821267076016,
+		Operator: PROFIT_MARGIN_OPERATOR,
 		Good:  true,
 	},
 	ROE_NAME: {
@@ -67,6 +70,7 @@ var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 		Label: ROE_LABEL,
 		Mark:  ROE_MARK,
 		Value: 23.718666342175712,
+		Operator: ROE_OPERATOR,
 		Good:  true,
 	},
 	DEBIT_RATIO_NAME: {
@@ -74,13 +78,15 @@ var StockIndicatorsMockVALE3 = map[string]domain.Indicator{
 		Label: DEBIT_RATIO_LABEL,
 		Mark:  DEBIT_RATIO_MARK,
 		Value: 23.24653200292042,
+		Operator: DEBIT_RATIO_OPERATOR,
 		Good:  true,
 	},
-	DIVIDEND_YELD_NAME: {
-		Name:  DIVIDEND_YELD_NAME,
-		Label: DIVIDEND_YELD_LABEL,
-		Mark:  DIVIDEND_YELD_MARK,
+	DIVIDEND_YIELD_NAME: {
+		Name:  DIVIDEND_YIELD_NAME,
+		Label: DIVIDEND_YIELD_LABEL,
+		Mark:  DIVIDEND_YIELD_MARK,
 		Value: 11.790651744568795,
+		Operator: DIVIDEND_YIELD_OPERATOR,
 		Good:  true,
 	},
 }

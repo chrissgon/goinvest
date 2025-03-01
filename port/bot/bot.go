@@ -10,6 +10,7 @@ import (
 	"github.com/chrissgon/goinvest/controller"
 	"github.com/chrissgon/goinvest/domain"
 	"github.com/chrissgon/goinvest/domain/fund"
+	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/lowbot"
 	"github.com/dustin/go-humanize"
 	"github.com/google/uuid"
@@ -31,7 +32,7 @@ func StartBot() {
 				return in, false
 			}
 
-			// indicators, err := stockController.Analyse(stockEntity)
+			indicators, err := stockController.Analyse(stockEntity)
 
 			if err != nil {
 				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
@@ -52,10 +53,16 @@ func StartBot() {
 
 📊 Indicadores e Análise
 
+%s
+%s
+%s
+%s
+%s
+%s
 
 ⚠️ Go Invest pode cometer erros. Verifique informações importantes.
 
-https://visnoinvest.com.br/stocks/PETR4/%s/`,
+https://visnoinvest.com.br/stocks/%s/`,
 				stockEntity.ID,
 				formatFloat64ToString(stockEntity.Price),
 				stockEntity.Company,
@@ -64,33 +71,14 @@ https://visnoinvest.com.br/stocks/PETR4/%s/`,
 				formatFloat64ToString(stockEntity.NetEquity),
 				formatFloat64ToString(stockEntity.NetDebt),
 				humanize.Comma(int64(stockEntity.Shares)),
-				// getIndicatorText(indicators[stock.PER_NAME]),
-				// getIndicatorText(indicators[stock.PBV_NAME]),
-				// getIndicatorText(indicators[stock.PROFIT_MARGIN_NAME]),
-				// getIndicatorText(indicators[stock.ROE_NAME]),
-				// getIndicatorText(indicators[stock.DEBIT_RATIO_NAME]),
-				// getIndicatorText(indicators[stock.DIVIDEND_YELD_NAME]),
+				getIndicatorText(indicators[stock.PER_NAME]),
+				getIndicatorText(indicators[stock.PBV_NAME]),
+				getIndicatorText(indicators[stock.PROFIT_MARGIN_NAME]),
+				getIndicatorText(indicators[stock.ROE_NAME]),
+				getIndicatorText(indicators[stock.DEBIT_RATIO_NAME]),
+				getIndicatorText(indicators[stock.DIVIDEND_YIELD_NAME]),
 				stockEntity.ID,
 			)
-			// sb := strings.Builder{}
-
-			// sb.WriteString(fmt.Sprintf("🏢 %v - %v \n\n", stockEntity.ID, formatFloat64ToString(stockEntity.Price)))
-
-			// sb.WriteString(fmt.Sprintf("Empresa (%v) \n", stockEntity.Company))
-			// sb.WriteString(fmt.Sprintf("\nLucro Líquido \n%v \n", formatFloat64ToString(stockEntity.NetProfit)))
-			// sb.WriteString(fmt.Sprintf("\nReceita Líquida \n%v \n", formatFloat64ToString(stockEntity.NetRevenue)))
-			// sb.WriteString(fmt.Sprintf("\nPatrimônio Líquido \n%v \n", formatFloat64ToString(stockEntity.NetEquity)))
-			// sb.WriteString(fmt.Sprintf("\nDespesa Líquida \n%v \n", formatFloat64ToString(stockEntity.NetDebt)))
-			// sb.WriteString(fmt.Sprintf("\nTotal de Ações \n%v \n \n", stockEntity.Shares))
-
-			// sb.WriteString("📈 Indicadores\n\n")
-
-			// getIndicatorText(&sb, indicators[stock.PER_NAME])
-			// getIndicatorText(&sb, indicators[stock.PBV_NAME])
-			// getIndicatorText(&sb, indicators[stock.PROFIT_MARGIN_NAME])
-			// getIndicatorText(&sb, indicators[stock.ROE_NAME])
-			// getIndicatorText(&sb, indicators[stock.DEBIT_RATIO_NAME])
-			// getIndicatorText(&sb, indicators[stock.DIVIDEND_YELD_NAME])
 
 			in := lowbot.NewInteractionMessageText(text)
 			in.SetTo(interaction.To)
@@ -147,7 +135,7 @@ https://fiis.com.br/%s/`,
 				fundEntity.AdministrationFee,
 				humanize.Comma(int64(fundEntity.Shares)),
 				getIndicatorText(indicators[fund.PBV_NAME]),
-				getIndicatorText(indicators[fund.DIVIDEND_YELD_MONTH_NAME]),
+				getIndicatorText(indicators[fund.DIVIDEND_YIELD_MONTH_NAME]),
 				getIndicatorText(indicators[fund.ADMINISTRATION_FEE_NAME]),
 				fundEntity.ID,
 			)
@@ -200,21 +188,33 @@ func getIndicatorText(indicator domain.Indicator) string {
 	if indicator.Good {
 		symbol = "✅"
 	}
-	if indicator.Name == fund.PBV_NAME {
+
+	switch indicator.Name {
+	case fund.PBV_NAME:
 		markPrefix = ""
-	}
-	if indicator.Name == fund.DIVIDEND_YELD_MONTH_NAME {
+	case fund.DIVIDEND_YIELD_MONTH_NAME:
 		valuePrefix = "% a.m"
-		markPrefix = "%"
-	}
-	if indicator.Name == fund.ADMINISTRATION_FEE_NAME {
+		markPrefix = "% a.m"
+	case fund.ADMINISTRATION_FEE_NAME:
 		valuePrefix = "% a.a"
+		markPrefix = "% a.a"
+	case stock.PROFIT_MARGIN_NAME:
+		valuePrefix = "%"
 		markPrefix = "%"
+	case stock.ROE_NAME:
+		valuePrefix = "%"
+		markPrefix = "%"
+	case stock.DEBIT_RATIO_NAME:
+		valuePrefix = "%"
+		markPrefix = "%"
+	case stock.DIVIDEND_YIELD_NAME:
+		valuePrefix = "% a.a"
+		markPrefix = "% a.a"
 	}
 
 	return fmt.Sprintf(`%s %s
-	- Valor Atual: %v%s
-	- Referência Ideal: %s %v%s
+	> Valor Atual: %v%s
+	> Referência Ideal: %s %v%s
 `,
 		symbol,
 		indicator.Label,

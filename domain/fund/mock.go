@@ -33,26 +33,29 @@ var FundEntityMockIRDM11 = FundEntity{
 }
 
 var FundIndicatorsMockMXRF11 = map[string]domain.Indicator{
-	PBV_NAME:{
-		Name: PBV_NAME,
+	PBV_NAME: {
+		Name:  PBV_NAME,
 		Label: PBV_LABEL,
-		Mark: PBV_MARK,
+		Mark:  PBV_MARK,
 		Value: 1.0567951318458417,
-		Good: true,
+		Operator: PBV_OPERATOR,
+		Good:  true,
 	},
-	DIVIDEND_YELD_MONTH_NAME: {
-		Name: DIVIDEND_YELD_MONTH_NAME,
-		Label: DIVIDEND_YELD_MONTH_LABEL,
-		Mark: DIVIDEND_YELD_MARK,
+	DIVIDEND_YIELD_MONTH_NAME: {
+		Name:  DIVIDEND_YIELD_MONTH_NAME,
+		Label: DIVIDEND_YIELD_MONTH_LABEL,
+		Mark:  DIVIDEND_YIELD_MARK,
 		Value: 0.9596928982725529,
-		Good: true,
+		Operator: DIVIDEND_YIELD_OPERATOR,
+		Good:  true,
 	},
 	ADMINISTRATION_FEE_NAME: {
-		Name: ADMINISTRATION_FEE_NAME,
+		Name:  ADMINISTRATION_FEE_NAME,
 		Label: ADMINISTRATION_FEE_LABEL,
-		Mark: ADMINISTRATION_FEE_MARK,
+		Mark:  ADMINISTRATION_FEE_MARK,
 		Value: 0.9,
-		Good: true,
+		Operator: ADMINISTRATION_FEE_OPERATOR,
+		Good:  true,
 	},
 }
 

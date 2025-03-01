@@ -103,12 +103,12 @@ func TestDomain_FundGetDividenYieldMonth(t *testing.T) {
 
 	dividend := fund.GetDividenYieldMonth()
 
-	if dividend.Name != DIVIDEND_YELD_MONTH_NAME {
-		t.Fatalf("GetDividenYieldMonth should return a struct with Name %v, but got %v", DIVIDEND_YELD_MONTH_NAME, dividend.Name)
+	if dividend.Name != DIVIDEND_YIELD_MONTH_NAME {
+		t.Fatalf("GetDividenYieldMonth should return a struct with Name %v, but got %v", DIVIDEND_YIELD_MONTH_NAME, dividend.Name)
 	}
 
-	if dividend.Mark != DIVIDEND_YELD_MARK {
-		t.Fatalf("GetDividenYieldMonth should return a struct with Mark %v, but got %v", DIVIDEND_YELD_MARK, dividend.Mark)
+	if dividend.Mark != DIVIDEND_YIELD_MARK {
+		t.Fatalf("GetDividenYieldMonth should return a struct with Mark %v, but got %v", DIVIDEND_YIELD_MARK, dividend.Mark)
 	}
 
 	value := 0.9596928982725529

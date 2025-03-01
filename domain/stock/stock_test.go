@@ -284,12 +284,12 @@ func TestDomain_StockGetDividenYield(t *testing.T) {
 
 	dividend := stock.GetDividenYield()
 
-	if dividend.Name != DIVIDEND_YELD_NAME {
-		t.Fatalf("GetDividenYield should return a struct with Name %v, but got %v", DIVIDEND_YELD_NAME, dividend.Name)
+	if dividend.Name != DIVIDEND_YIELD_NAME {
+		t.Fatalf("GetDividenYield should return a struct with Name %v, but got %v", DIVIDEND_YIELD_NAME, dividend.Name)
 	}
 
-	if dividend.Mark != DIVIDEND_YELD_MARK {
-		t.Fatalf("GetDividenYield should return a struct with Mark %v, but got %v", DIVIDEND_YELD_MARK, dividend.Mark)
+	if dividend.Mark != DIVIDEND_YIELD_MARK {
+		t.Fatalf("GetDividenYield should return a struct with Mark %v, but got %v", DIVIDEND_YIELD_MARK, dividend.Mark)
 	}
 
 	value := 11.790651744568795
@@ -467,7 +467,7 @@ func TestDomain_StockGoodDebitRatio(t *testing.T) {
 	}
 }
 func TestDomain_StockGoodDividendYield(t *testing.T) {
-	dy := DividendYield(0.87, 26.74)
+	dy := DividendYield(0.87, 16.74)
 
 	if !GoodDividendYield(dy) {
 		t.Fatalf("GoodDividendYield should return true, but got false")

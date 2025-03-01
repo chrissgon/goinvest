@@ -23,28 +23,34 @@ type StockEntity struct {
 }
 
 const PER_MARK = 15
+const PER_OPERATOR = "≤"
 const PER_NAME = "per"
 const PER_LABEL = "P/L (Preço / Lucro Líquido por Ação)"
 
 const PBV_MARK = 2
+const PBV_OPERATOR = "≤"
 const PBV_NAME = "pbv"
 const PBV_LABEL = "P/VPA (Preço / Valor Patrimonial da Ação)"
 
 const PROFIT_MARGIN_MARK = 10
+const PROFIT_MARGIN_OPERATOR = "≥"
 const PROFIT_MARGIN_NAME = "profitMargin"
 const PROFIT_MARGIN_LABEL = "Margem Líquida (Lucro Líquido / Receita Líquida)"
 
 const ROE_MARK = 10
+const ROE_OPERATOR = "≥"
 const ROE_NAME = "roe"
 const ROE_LABEL = "ROE (Lucro Líquido / Patrimônio Líquido)"
 
 const DEBIT_RATIO_MARK = 70
+const DEBIT_RATIO_OPERATOR = "≤"
 const DEBIT_RATIO_NAME = "debitRatio"
 const DEBIT_RATIO_LABEL = "DL/PL (Dívida Líquida / Patrimônio Líquido)"
 
-const DIVIDEND_YELD_MARK = 2
-const DIVIDEND_YELD_NAME = "dividendYield"
-const DIVIDEND_YELD_LABEL = "Dividend Yield (Proventos por Ação / Preço da Ação)"
+const DIVIDEND_YIELD_MARK = 5
+const DIVIDEND_YIELD_OPERATOR = "≥"
+const DIVIDEND_YIELD_NAME = "dividendYield"
+const DIVIDEND_YIELD_LABEL = "Dividend Yield (Proventos por Ação / Preço da Ação)"
 
 var ErrStockIDInvalid = errors.New("stock ID is invalid")
 var ErrStockNotFound = errors.New("stock not found")
@@ -100,6 +106,7 @@ func (entity *StockEntity) GetPER() domain.Indicator {
 		Label: PER_LABEL,
 		Mark:  PER_MARK,
 		Value: per,
+		Operator: PER_OPERATOR,
 		Good:  GoodPER(per),
 	}
 }
@@ -113,6 +120,7 @@ func (entity *StockEntity) GetPBV() domain.Indicator {
 		Label: PBV_LABEL,
 		Mark:  PBV_MARK,
 		Value: pbv,
+		Operator: PBV_OPERATOR,
 		Good:  GoodPBV(pbv),
 	}
 }
@@ -125,6 +133,7 @@ func (entity *StockEntity) GetProfitMargin() domain.Indicator {
 		Label: PROFIT_MARGIN_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
 		Value: margin,
+		Operator: PROFIT_MARGIN_OPERATOR,
 		Good:  GoodProfitMargin(margin),
 	}
 }
@@ -137,6 +146,7 @@ func (entity *StockEntity) GetROE() domain.Indicator {
 		Label: ROE_LABEL,
 		Mark:  PROFIT_MARGIN_MARK,
 		Value: roe,
+		Operator: ROE_OPERATOR,
 		Good:  GoodROE(roe),
 	}
 }
@@ -149,6 +159,7 @@ func (entity *StockEntity) GetDebtRatio() domain.Indicator {
 		Label: DEBIT_RATIO_LABEL,
 		Mark:  DEBIT_RATIO_MARK,
 		Value: debt,
+		Operator: DEBIT_RATIO_OPERATOR,
 		Good:  GoodDebitRatio(debt),
 	}
 }
@@ -161,10 +172,11 @@ func (entity *StockEntity) GetDividenYield() domain.Indicator {
 	}
 
 	return domain.Indicator{
-		Name:  DIVIDEND_YELD_NAME,
-		Label: DIVIDEND_YELD_LABEL,
-		Mark:  DIVIDEND_YELD_MARK,
+		Name:  DIVIDEND_YIELD_NAME,
+		Label: DIVIDEND_YIELD_LABEL,
+		Mark:  DIVIDEND_YIELD_MARK,
 		Value: dividend,
+		Operator: DIVIDEND_YIELD_OPERATOR,
 		Good:  GoodDividendYield(dividend),
 	}
 }
@@ -202,20 +214,20 @@ func DividendYield(dividend, stockPrice float64) float64 {
 }
 
 func GoodPER(pricePerEarning float64) bool {
-	return pricePerEarning < PER_MARK
+	return pricePerEarning <= PER_MARK
 }
 func GoodPBV(pricePerAsset float64) bool {
-	return pricePerAsset < PBV_MARK
+	return pricePerAsset <= PBV_MARK
 }
 func GoodProfitMargin(margin float64) bool {
-	return margin > PROFIT_MARGIN_MARK
+	return margin >= PROFIT_MARGIN_MARK
 }
 func GoodROE(roe float64) bool {
-	return roe > ROE_MARK
+	return roe >= ROE_MARK
 }
 func GoodDebitRatio(debit float64) bool {
-	return debit < DEBIT_RATIO_MARK
+	return debit <= DEBIT_RATIO_MARK
 }
 func GoodDividendYield(dy float64) bool {
-	return dy > DIVIDEND_YELD_MARK
+	return dy >= DIVIDEND_YIELD_MARK
 }

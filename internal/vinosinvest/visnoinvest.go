@@ -19,6 +19,7 @@ type visnoInvestResponse struct {
 	Metadata struct {
 		Company string
 		Price   string
+		dy      string
 	} `json:"metadata"`
 	MetricGroups []struct {
 		Key     string
@@ -85,13 +86,13 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 		return stock.StockEntity{}, err
 	}
 
-	dividendYield, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[13].Value)
+	dividendYield, err := internal.ConvertStringToFloat64(data.MetricGroups[0].Metrics[3].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	lpa, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[7].Value)
+	lpa, err := internal.ConvertStringToFloat64(data.MetricGroups[0].Metrics[12].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err

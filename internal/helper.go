@@ -18,6 +18,7 @@ func ConvertStringToFloat64(s string) (float64, error) {
 	// Remove currency symbol and any whitespace
 	s = strings.TrimSpace(strings.TrimPrefix(s, "R$"))
 
+	s = strings.ReplaceAll(s, "%", "")
 	// Remove thousands separators
 	s = strings.ReplaceAll(s, ".", "")
 
