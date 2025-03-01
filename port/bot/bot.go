@@ -29,7 +29,7 @@ func StartBot() {
 				in := lowbot.NewInteractionMessageText("Não foi possível encontrar a ação informada.")
 				in.SetTo(interaction.To)
 				in.SetFrom(interaction.From)
-				return in, false
+				return in, true
 			}
 
 			indicators, err := stockController.Analyse(stockEntity)
@@ -38,7 +38,7 @@ func StartBot() {
 				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
 				in.SetTo(interaction.To)
 				in.SetFrom(interaction.From)
-				return in, false
+				return in, true
 			}
 
 			text := fmt.Sprintf(`
@@ -95,7 +95,7 @@ https://visnoinvest.com.br/stocks/%s/`,
 				in := lowbot.NewInteractionMessageText("Não foi possível encontrar o fundo informado.")
 				in.SetTo(interaction.To)
 				in.SetFrom(interaction.From)
-				return in, false
+				return in, true
 			}
 
 			indicators, err := fundController.Analyse(fundEntity)
@@ -104,7 +104,7 @@ https://visnoinvest.com.br/stocks/%s/`,
 				in := lowbot.NewInteractionMessageText("Ocorreu um erro ao gerar os indicadores.\n Por favor, tente novamente mais tarde.")
 				in.SetTo(interaction.To)
 				in.SetFrom(interaction.From)
-				return in, false
+				return in, true
 			}
 
 			text := fmt.Sprintf(`
@@ -213,10 +213,10 @@ func getIndicatorText(indicator domain.Indicator) string {
 	}
 
 	return fmt.Sprintf(`%s %s
-	> Valor Atual: %v%s
-	> Referência Ideal: %s %v%s
+	    📌 Valor Atual: %v%s
+	    ℹ Valor Ideal: %s %v%s
 `,
-		symbol,
+symbol,
 		indicator.Label,
 		toFixed(indicator.Value, 2),
 		valuePrefix,

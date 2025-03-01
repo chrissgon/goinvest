@@ -2,7 +2,7 @@ package fiis
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -77,22 +77,24 @@ func (f *Fiis) Run(ID string) (fund.FundEntity, error) {
 		fundEntity.Name = getFundName(e.Text)
 
 		response, err := ai.Ask(`
-		Você é um ótimo extrator de taxas de investimentos. Aqui está suas regras:
+		Me informe as taxas que voce pode identificar no texto indicado, bem como seus valores. Aqui está suas regras:
 
 		1. Extraia as informações sobre taxas do texto indicado, e me apresente como um JSON.
 		2. Deixe o JSON o mais simples possível, apenas com o nome da taxa e o valor numérico.
 		3. Não me responda nada além do JSON.
 		4. Caso não encontre nenhuma taxa retorne um JSON vazio.
 		5. Não adicione a taxa ao JSON caso o valor seja zero ou null.
-		7. Responda no formato do JSON abaixo:
+		7. A principal taxa a ser encontrada é 'Taxa de Administração'.
+		8. Responda no formato do JSON abaixo:
 
 		{
-			"NOME DA TAXA": 0.9,
+			NOME DA TAXA: VALOR NUMERICO DA TAXA,
 		}
 
 		Texto: ` + e.Text)
 
 		if err != nil {
+			log.Println(err)
 			return
 		}
 
@@ -100,6 +102,7 @@ func (f *Fiis) Run(ID string) (fund.FundEntity, error) {
 		err = json.Unmarshal([]byte(response), &taxes)
 
 		if err != nil {
+			log.Println(err)
 			return
 		}
 
@@ -108,7 +111,6 @@ func (f *Fiis) Run(ID string) (fund.FundEntity, error) {
 	})
 
 	c.OnHTML(".updatesContent", func(e *colly.HTMLElement) {
-		fmt.Println(e.Text)
 	})
 
 	c.OnError(func(_ *colly.Response, e error) {

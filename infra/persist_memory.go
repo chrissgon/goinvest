@@ -1,8 +1,6 @@
 package infra
 
 import (
-	"fmt"
-
 	"github.com/chrissgon/goinvest/entity"
 )
 
@@ -17,13 +15,11 @@ func NewPersistMemory[T any]() entity.IPersist[T] {
 }
 
 func (p *PersistMemory[T]) Add(ID string, entity T) error {
-	fmt.Println(p.list)
 	p.list[ID] = entity
 	return nil
 }
 
 func (p *PersistMemory[T]) Get(ID string) T {
-	fmt.Println(p.list)
 	return p.list[ID]
 }
 

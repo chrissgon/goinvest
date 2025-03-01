@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/chrissgon/goinvest/app"
@@ -12,24 +14,30 @@ import (
 
 type FundController struct{}
 
-var persist = infra.NewPersistMemory[fund.FundEntity]()
+var fundPersist = infra.NewPersistMemory[fund.FundEntity]()
 var fundSearchRepo = fiis.NewFiis()
 var fundApp = app.NewFundApp(fundSearchRepo)
 
 func (FundController) Search(ID string) (fund.FundEntity, error) {
-	fundCached := persist.Get(ID)
+	ID = strings.ToUpper(ID)
 
-	if fundCached.ID != ID || fundCached.CreatedAt.After(fundCached.CreatedAt.Add(24*time.Hour)) {
-		fundGot, err := fundApp.Search(ID)
+	fundCached := fundPersist.Get(ID)
 
-		if err == nil {
-			persist.Add(fundGot.ID, fundGot)
-		}
+	cachedIsValid := fundCached.ID == ID && time.Since(fundCached.CreatedAt) < 24*time.Hour
 
-		return fundGot, err
+	if cachedIsValid {
+		fmt.Println("cached valid")
+		return fundCached, nil
+	}
+	
+	fundGot, err := fundApp.Search(ID)
+	
+	if err == nil {
+		fmt.Println("add persist")
+		fundPersist.Add(fundGot.ID, fundGot)
 	}
 
-	return fundCached, nil
+	return fundGot, err
 }
 
 func (FundController) Analyse(fundEntity fund.FundEntity) (map[string]domain.Indicator, error) {

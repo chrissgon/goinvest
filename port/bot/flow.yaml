@@ -36,15 +36,17 @@ steps:
 
   # stock
   stockInput:
-    action: Input
+    action: Button
     next:
       ^[a-zA-Z]{4}(3|4)$: stockSearch
+      1: stockOrFund
       default: wrongStockID
     parameters:
       texts:
         - Por favor, digite o ticket da ação que deseja buscar.
-        - ""
         - Exemplo (PETR4)
+      buttons:
+        - Voltar
 
   stockSearch:
     action: SearchStock
@@ -62,15 +64,17 @@ steps:
 
   # fund
   fundInput:
-    action: Input
+    action: Button
     next:
       ^[a-zA-Z]{4}(11)$: fundSearch
+      1: stockOrFund
       default: wrongFundID
     parameters:
       texts:
         - Por favor, digite o ticket do fundo que deseja buscar.
-        - ""
         - Exemplo (MXRF11)
+      buttons:
+        - Voltar
 
   fundSearch:
     action: SearchFund
