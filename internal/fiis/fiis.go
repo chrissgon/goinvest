@@ -1,10 +1,13 @@
 package fiis
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/chrissgon/goinvest/ai"
 	"github.com/chrissgon/goinvest/domain/fund"
 	"github.com/chrissgon/goinvest/internal"
 	"github.com/gocolly/colly"
@@ -72,7 +75,36 @@ func (f *Fiis) Run(ID string) (fund.FundEntity, error) {
 
 	c.OnHTML(".newsContent__article", func(e *colly.HTMLElement) {
 		fundEntity.Name = getFundName(e.Text)
-		fundEntity.AdministrationFee, fundEntity.PerformanceFee = getTaxes(e.Text)
+
+		response, err := ai.Ask(`
+		Você é um ótimo extrator de taxas de investimentos. Aqui está suas regras:
+
+		1. Extraia as informações sobre taxas do texto indicado, e me apresente como um JSON.
+		2. Deixe o JSON o mais simples possível, apenas com o nome da taxa e o valor numérico.
+		3. Não me responda nada além do JSON.
+		4. Caso não encontre nenhuma taxa retorne um JSON vazio.
+		5. Não adicione a taxa ao JSON caso o valor seja zero ou null.
+		7. Responda no formato do JSON abaixo:
+
+		{
+			"NOME DA TAXA": 0.9,
+		}
+
+		Texto: ` + e.Text)
+
+		if err != nil {
+			return
+		}
+
+		taxes := map[string]float64{}
+		err = json.Unmarshal([]byte(response), &taxes)
+
+		if err != nil {
+			return
+		}
+
+		fundEntity.Taxes = taxes
+		fundEntity.AdministrationFee = taxes["Taxa de Administração"]
 	})
 
 	c.OnHTML(".updatesContent", func(e *colly.HTMLElement) {
@@ -90,25 +122,9 @@ func (f *Fiis) Run(ID string) (fund.FundEntity, error) {
 	}
 
 	fundEntity.ID = ID
+	fundEntity.CreatedAt = time.Now()
 
 	return fundEntity, err
-}
-
-func getTaxes(text string) (admFee float64, prfFee float64) {
-	admRegex := regexp.MustCompile(`(?i)taxa de (administração).*?(\d+[,\.]?\d*)`)
-	prfRegex := regexp.MustCompile(`(?i)taxa de (performance).*?(\d+[,\.]?\d*)`)
-
-	admResp := admRegex.FindAllStringSubmatch(text, -1)
-	prfResp := prfRegex.FindAllStringSubmatch(text, -1)
-
-	if len(admResp) > 0 && len(admResp[0]) > 2 {
-		admFee, _ = internal.ConvertTaxStringToFloat64(admResp[0][2])
-	}
-	if len(prfResp) > 0 && len(prfResp[0]) > 2 {
-		prfFee, _ = internal.ConvertTaxStringToFloat64(prfResp[0][2])
-	}
-
-	return
 }
 
 func getFundName(text string) string {

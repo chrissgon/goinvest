@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/chrissgon/goinvest/domain/stock"
 	"github.com/chrissgon/goinvest/internal"
@@ -60,25 +61,25 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 		return stock.StockEntity{}, err
 	}
 
-	netProfit, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[6].Value)
+	netProfit, err := internal.ConvertStringToFloat64(data.MetricGroups[3].Metrics[4].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netRevenue, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[4].Value)
+	netRevenue, err := internal.ConvertStringToFloat64(data.MetricGroups[3].Metrics[0].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netEquity, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[10].Value)
+	netEquity, err := internal.ConvertStringToFloat64(data.MetricGroups[4].Metrics[1].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
 	}
 
-	netDebt, err := internal.ConvertStringToFloat64(data.MetricGroups[1].Metrics[17].Value)
+	netDebt, err := internal.ConvertStringToFloat64(data.MetricGroups[4].Metrics[3].Value)
 
 	if err != nil {
 		return stock.StockEntity{}, err
@@ -106,5 +107,6 @@ func (v *VisnoInvest) Run(ID string) (stock.StockEntity, error) {
 		NetDebt:       netDebt,
 		Shares:        int(netProfit / lpa),
 		DividendYield: dividendYield,
+		CreatedAt:     time.Now(),
 	}, nil
 }

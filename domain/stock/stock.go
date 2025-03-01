@@ -3,6 +3,7 @@ package stock
 import (
 	"errors"
 	"regexp"
+	"time"
 
 	"github.com/chrissgon/goinvest/domain"
 )
@@ -18,6 +19,7 @@ type StockEntity struct {
 	Dividend      float64
 	DividendYield float64
 	Shares        int
+	CreatedAt     time.Time
 }
 
 const PER_MARK = 15

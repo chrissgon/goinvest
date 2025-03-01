@@ -3,6 +3,7 @@ package fund
 import (
 	"errors"
 	"regexp"
+	"time"
 
 	"github.com/chrissgon/goinvest/domain"
 )
@@ -15,22 +16,26 @@ type FundEntity struct {
 	NetEquity           float64
 	Price               float64
 	AdministrationFee   float64
-	PerformanceFee      float64
+	Taxes               map[string]float64
 	DividendYieldAnnual float64
 	Shares              int
 	Benchmark           string
 	Reports             []string
+	CreatedAt           time.Time
 }
 
 const PBV_MARK = 1.3
+const PBV_OPERATOR = "≤"
 const PBV_NAME = "pbv"
 const PBV_LABEL = "P/VPC (Preço / Valor Patrimonial da Cota)"
 
 const DIVIDEND_YELD_MARK = 0.5
+const DIVIDEND_YELD_OPERATOR = "≥"
 const DIVIDEND_YELD_MONTH_NAME = "dividendYieldMonth"
 const DIVIDEND_YELD_MONTH_LABEL = "Dividend Yield do Período (Rendimentos por Cota / Preço da Cota)"
 
 const ADMINISTRATION_FEE_MARK = 1.50
+const ADMINISTRATION_FEE_OPERATOR = "≤"
 const ADMINISTRATION_FEE_NAME = "administrationFee"
 const ADMINISTRATION_FEE_LABEL = "Taxa de Administração"
 
@@ -73,6 +78,7 @@ func (entity *FundEntity) GetPBV() domain.Indicator {
 		Label: PBV_LABEL,
 		Mark:  PBV_MARK,
 		Value: pbv,
+		Operator: PBV_OPERATOR,
 		Good:  GoodPBV(pbv),
 	}
 }
@@ -83,6 +89,7 @@ func (entity *FundEntity) GetDividenYieldMonth() domain.Indicator {
 		Label: DIVIDEND_YELD_MONTH_LABEL,
 		Mark:  DIVIDEND_YELD_MARK,
 		Value: dym,
+		Operator: DIVIDEND_YELD_OPERATOR,
 		Good:  GoodDividendYieldMonth(dym),
 	}
 }
@@ -92,6 +99,7 @@ func (entity *FundEntity) GetAdministrationFee() domain.Indicator {
 		Label: ADMINISTRATION_FEE_LABEL,
 		Mark:  ADMINISTRATION_FEE_MARK,
 		Value: entity.AdministrationFee,
+		Operator: ADMINISTRATION_FEE_OPERATOR,
 		Good:  GoodAdministrationFee(entity.AdministrationFee),
 	}
 }
@@ -118,11 +126,11 @@ func DividendYieldMonth(lastIncome, fundPrice float64) float64 {
 }
 
 func GoodPBV(pricePerAsset float64) bool {
-	return pricePerAsset < PBV_MARK
+	return pricePerAsset <= PBV_MARK
 }
 func GoodDividendYieldMonth(dym float64) bool {
-	return dym > DIVIDEND_YELD_MARK
+	return dym >= DIVIDEND_YELD_MARK
 }
 func GoodAdministrationFee(fee float64) bool {
-	return fee < ADMINISTRATION_FEE_MARK
+	return fee <= ADMINISTRATION_FEE_MARK
 }
